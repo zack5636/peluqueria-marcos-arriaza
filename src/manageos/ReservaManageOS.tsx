@@ -115,15 +115,36 @@ function nivelDelDia(dia: DiaDePanorama): NivelDelDia {
 }
 
 export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInicial }: Props) {
+  const [paso, setPaso] = useState<Paso>('servicio');
+  const [servicioId, setServicioId] = useState<string>('');
+  const [notaPaquete, setNotaPaquete] = useState<string | null>(null);
+
   /*
    * Quién llega ya elegido. Un paquete se resuelve al servicio real que mejor
    * lo representa (ver `servicioParaPaquete`); si no hay preselección válida,
    * o el paquete no encaja con ningún servicio real, se empieza igual que
    * siempre por elegir servicio, en vez de fingir una elección que no hay.
+   *
+   * Esto reacciona a la elección, no solo al montaje: el widget ya está en
+   * pantalla cuando se elige un servicio o un paquete desde una tarjeta —no
+   * se vuelve a montar—, así que un `useState` con valor inicial nunca vería
+   * el cambio. La clave depende de valores primitivos, no de los objetos que
+   * llegan por prop (`resolverPreseleccion` crea uno nuevo en cada render),
+   * para no repetir esta resolución en cada repintado sin que haya cambiado
+   * la elección de verdad.
    */
-  const resueltoAlInicio = useMemo(() => {
+  const clave = servicioInicial
+    ? `srv:${servicioInicial}`
+    : paqueteInicial
+      ? `pkg:${paqueteInicial.nombre}|${paqueteInicial.nombresServicios.join(',')}`
+      : '';
+  const claveAnterior = useRef<string | null>(null);
+  useEffect(() => {
+    if (!clave || clave === claveAnterior.current) return;
+    claveAnterior.current = clave;
     if (servicioInicial && estado.services.some((entrada) => entrada.id === servicioInicial)) {
-      return { servicioId: servicioInicial, notaPaquete: null as string | null };
+      setServicioId(servicioInicial); setNotaPaquete(null); setFecha(''); setInicio(''); setPaso('dia');
+      return;
     }
     if (paqueteInicial) {
       const encontrado = servicioParaPaquete(paqueteInicial, estado.services);
@@ -134,17 +155,11 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
         const nota = resto.length > 0
           ? `${paqueteInicial.nombre} (incluye también: ${resto.join(', ')})`
           : paqueteInicial.nombre;
-        return { servicioId: encontrado.id, notaPaquete: nota };
+        setServicioId(encontrado.id); setNotaPaquete(nota); setFecha(''); setInicio(''); setPaso('dia');
       }
     }
-    return { servicioId: '', notaPaquete: null as string | null };
-    // Solo se resuelve al montar: cambiar de paso más tarde no debe reiniciar la elección.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const [paso, setPaso] = useState<Paso>(resueltoAlInicio.servicioId ? 'dia' : 'servicio');
-  const [servicioId, setServicioId] = useState<string>(resueltoAlInicio.servicioId);
-  const [notaPaquete] = useState<string | null>(resueltoAlInicio.notaPaquete);
+  }, [clave, estado.services]);
   const [mes, setMes] = useState(() => { const hoy = new Date(); return new Date(hoy.getFullYear(), hoy.getMonth(), 1); });
   const [dias, setDias] = useState<DiaDePanorama[]>([]);
   const [cargandoAgenda, setCargandoAgenda] = useState(false);
