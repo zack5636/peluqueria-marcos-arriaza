@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ErrorDeManageOS, crearReserva, panoramaDeHuecos, precioLegible,
-  type CampoDeReserva, type DiaDePanorama, type EstadoDelNegocio, type ServicioPublico,
+  ErrorDeManageOS, crearReserva, panoramaDeHuecos, precioLegible, precioLegibleTamano,
+  type CampoDeReserva, type DiaDePanorama, type EstadoDelNegocio, type ServicioPublico, type TamanoDeServicio,
 } from './cliente';
 import { Icon } from '../site/components/Icon';
 
@@ -62,7 +62,7 @@ function servicioParaPaquete(
   ));
 }
 
-type Paso = 'servicio' | 'dia' | 'hora' | 'datos' | 'hecho';
+type Paso = 'servicio' | 'tamano' | 'dia' | 'hora' | 'datos' | 'hecho';
 type NivelDelDia = 'libre' | 'ocupado' | 'completo';
 
 const DIAS_CORTOS = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -117,6 +117,7 @@ function nivelDelDia(dia: DiaDePanorama): NivelDelDia {
 export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInicial }: Props) {
   const [paso, setPaso] = useState<Paso>('servicio');
   const [servicioId, setServicioId] = useState<string>('');
+  const [sizeId, setSizeId] = useState<string>('');
   const [notaPaquete, setNotaPaquete] = useState<string | null>(null);
 
   /*
@@ -142,8 +143,13 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
   useEffect(() => {
     if (!clave || clave === claveAnterior.current) return;
     claveAnterior.current = clave;
-    if (servicioInicial && estado.services.some((entrada) => entrada.id === servicioInicial)) {
-      setServicioId(servicioInicial); setNotaPaquete(null); setFecha(''); setInicio(''); setPaso('dia');
+    const entrar = (encontrado: ServicioPublico) => {
+      setServicioId(encontrado.id); setSizeId(''); setFecha(''); setInicio('');
+      setPaso(encontrado.sizeTiers.length > 0 ? 'tamano' : 'dia');
+    };
+    if (servicioInicial) {
+      const encontrado = estado.services.find((entrada) => entrada.id === servicioInicial);
+      if (encontrado) { setNotaPaquete(null); entrar(encontrado); }
       return;
     }
     if (paqueteInicial) {
@@ -155,7 +161,7 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
         const nota = resto.length > 0
           ? `${paqueteInicial.nombre} (incluye también: ${resto.join(', ')})`
           : paqueteInicial.nombre;
-        setServicioId(encontrado.id); setNotaPaquete(nota); setFecha(''); setInicio(''); setPaso('dia');
+        setNotaPaquete(nota); entrar(encontrado);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,6 +183,13 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
     [estado.services],
   );
   const servicio = servicios.find((entrada) => entrada.id === servicioId) ?? null;
+  /*
+   * Elegir tamaño es una etapa aparte solo cuando el servicio ofrece alguno:
+   * los que no tienen ninguno se reservan exactamente como siempre, sin pedir
+   * una elección que no aporta nada.
+   */
+  const requiereTamano = (servicio?.sizeTiers.length ?? 0) > 0;
+  const tamano = servicio?.sizeTiers.find((entrada) => entrada.id === sizeId) ?? null;
   const campos = useMemo(
     () => [...estado.booking.fields].sort((a, b) => a.displayOrder - b.displayOrder),
     [estado.booking.fields],
@@ -202,20 +215,21 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
   useEffect(() => {
     if (servicioId && !servicios.some((entrada) => entrada.id === servicioId)) {
       setServicioId('');
+      setSizeId('');
       setInicio('');
       setPaso('servicio');
       setAviso('Ese servicio ya no está disponible. Elige otro, por favor.');
     }
   }, [servicioId, servicios]);
 
-  const cargarAgenda = useCallback(async (idServicio: string, primerDiaDelMes: Date) => {
+  const cargarAgenda = useCallback(async (idServicio: string, primerDiaDelMes: Date, idTamano?: string) => {
     setCargandoAgenda(true);
     try {
       const desde = primerDiaDelMes < hoy ? hoy : primerDiaDelMes;
       const finMes = new Date(primerDiaDelMes.getFullYear(), primerDiaDelMes.getMonth() + 1, 0);
       const hasta = finMes > ultimoDia ? ultimoDia : finMes;
       if (hasta < desde) { setDias([]); return; }
-      const panorama = await panoramaDeHuecos(idServicio, iso(desde), iso(hasta));
+      const panorama = await panoramaDeHuecos(idServicio, iso(desde), iso(hasta), idTamano);
       setDias(panorama.days);
       /* Si la hora elegida ha dejado de estar libre, se suelta y se dice. */
       setInicio((elegida) => {
@@ -234,10 +248,16 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
     }
   }, [hoy, ultimoDia]);
 
+  /*
+   * Si el servicio pide tamaño, la agenda no se pide hasta que haya uno
+   * elegido: sin él no hay duración con la que calcular huecos de verdad, y
+   * pedirla igual solo enseñaría una rejilla que la reserva final no va a
+   * respetar.
+   */
   useEffect(() => {
-    if (!servicioId) return;
-    void cargarAgenda(servicioId, mes);
-  }, [servicioId, mes, cargarAgenda]);
+    if (!servicioId || (requiereTamano && !sizeId)) return;
+    void cargarAgenda(servicioId, mes, sizeId || undefined);
+  }, [servicioId, mes, sizeId, requiereTamano, cargarAgenda]);
 
   /*
    * La agenda envejece mientras la pantalla está abierta. Se vuelve a pedir al
@@ -245,20 +265,26 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
    * envíe una hora que se ocupó hace diez minutos.
    */
   useEffect(() => {
-    if (!servicioId || paso === 'hecho') return;
+    if (!servicioId || paso === 'hecho' || (requiereTamano && !sizeId)) return;
     const alVolver = () => {
-      if (document.visibilityState === 'visible' && !enviandoRef.current) void cargarAgenda(servicioId, mes);
+      if (document.visibilityState === 'visible' && !enviandoRef.current) void cargarAgenda(servicioId, mes, sizeId || undefined);
     };
     document.addEventListener('visibilitychange', alVolver);
     return () => document.removeEventListener('visibilitychange', alVolver);
-  }, [servicioId, mes, paso, cargarAgenda]);
+  }, [servicioId, mes, sizeId, requiereTamano, paso, cargarAgenda]);
 
   const porFecha = useMemo(() => new Map(dias.map((dia) => [dia.date, dia])), [dias]);
   const diaElegido = fecha ? porFecha.get(fecha) : undefined;
   const huecosDelDia = diaElegido?.slots ?? [];
 
   const elegirServicio = (id: string) => {
-    setServicioId(id); setFecha(''); setInicio(''); setAviso(null); setPaso('dia');
+    const elegido = servicios.find((entrada) => entrada.id === id);
+    setServicioId(id); setSizeId(''); setFecha(''); setInicio(''); setAviso(null);
+    setPaso(elegido && elegido.sizeTiers.length > 0 ? 'tamano' : 'dia');
+  };
+
+  const elegirTamano = (id: string) => {
+    setSizeId(id); setFecha(''); setInicio(''); setAviso(null); setPaso('dia');
   };
 
   const faltantes = campos.filter((campo) => {
@@ -303,7 +329,7 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
         }
       }
       const respuesta = await crearReserva(
-        { serviceId: servicio.id, startsAt: inicio, customer: cliente, details: detalles },
+        { serviceId: servicio.id, ...(sizeId ? { sizeId } : {}), startsAt: inicio, customer: cliente, details: detalles },
         crypto.randomUUID(),
       );
       setReserva({ startsAt: respuesta.booking.startsAt, servicio: respuesta.booking.service.name });
@@ -313,7 +339,7 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
         setAviso('Esa hora acaba de ocuparse. Elige otra, por favor.');
         setInicio('');
         setPaso('hora');
-        void cargarAgenda(servicio.id, mes);
+        void cargarAgenda(servicio.id, mes, sizeId || undefined);
       } else {
         setAviso(error instanceof ErrorDeManageOS ? error.message : 'No hemos podido completar la reserva.');
       }
@@ -342,11 +368,13 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
   return (
     <div className="pco-reserva">
       <ol className="pco-reserva__pasos" aria-label="Pasos de la reserva">
-        {(['servicio', 'dia', 'hora', 'datos'] as const).map((clave, indice) => {
-          const orden: Paso[] = ['servicio', 'dia', 'hora', 'datos'];
+        {(requiereTamano
+          ? (['servicio', 'tamano', 'dia', 'hora', 'datos'] satisfies Paso[])
+          : (['servicio', 'dia', 'hora', 'datos'] satisfies Paso[])
+        ).map((clave, indice, orden: Paso[]) => {
           const actual = orden.indexOf(paso);
           const estadoPaso = indice < actual ? 'hecho' : indice === actual ? 'actual' : 'pendiente';
-          const etiquetas = { servicio: 'Servicio', dia: 'Día', hora: 'Hora', datos: 'Tus datos' };
+          const etiquetas: Record<Paso, string> = { servicio: 'Servicio', tamano: 'Tamaño', dia: 'Día', hora: 'Hora', datos: 'Tus datos', hecho: 'Hecho' };
           return (
             <li key={clave} className={`pco-reserva__paso pco-reserva__paso--${estadoPaso}`}>
               <span className="pco-reserva__num">{indice < actual ? <Icon name="check" size={13} /> : indice + 1}</span>
@@ -378,8 +406,16 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
               >
                 <span className="pco-reserva__servicio-nombre">{entrada.name}</span>
                 <span className="pco-reserva__servicio-meta">
-                  {entrada.durationMinutes} min
-                  {precioLegible(entrada) ? <> · {precioLegible(entrada)}</> : null}
+                  {entrada.sizeTiers.length > 0 ? (
+                    <>Según tamaño · desde {precioLegibleTamano(
+                      entrada.sizeTiers.reduce((mas_barato, tier) => (tier.priceMinor < mas_barato.priceMinor ? tier : mas_barato)),
+                    )}</>
+                  ) : (
+                    <>
+                      {entrada.durationMinutes} min
+                      {precioLegible(entrada) ? <> · {precioLegible(entrada)}</> : null}
+                    </>
+                  )}
                 </span>
                 {entrada.description ? (
                   <span className="pco-reserva__servicio-desc">{entrada.description}</span>
@@ -387,6 +423,28 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
                 <Icon name="arrowRight" size={16} />
               </button>
             ))}
+        </div>
+      ) : null}
+
+      {paso === 'tamano' && servicio ? (
+        <div className="pco-reserva__tamanos">
+          <button type="button" className="pco-reserva__volver" onClick={() => setPaso('servicio')}>
+            <Icon name="arrowLeft" size={16} /> {servicio.name}
+          </button>
+          {[...servicio.sizeTiers].sort((a, b) => a.displayOrder - b.displayOrder).map((entrada) => (
+            <button
+              key={entrada.id}
+              type="button"
+              className="pco-reserva__tamano"
+              onClick={() => elegirTamano(entrada.id)}
+            >
+              <span className="pco-reserva__tamano-nombre">{entrada.label}</span>
+              <span className="pco-reserva__tamano-meta">
+                {entrada.durationMinutes} min · {precioLegibleTamano(entrada)}
+              </span>
+              <Icon name="arrowRight" size={16} />
+            </button>
+          ))}
         </div>
       ) : null}
 
@@ -399,8 +457,9 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
           ultimoDia={ultimoDia}
           onMes={setMes}
           onDia={(elegido) => { setFecha(elegido); setInicio(''); setPaso('hora'); }}
-          onVolver={() => setPaso('servicio')}
+          onVolver={() => setPaso(requiereTamano ? 'tamano' : 'servicio')}
           servicio={servicio}
+          tamano={tamano}
         />
       ) : null}
 
@@ -439,7 +498,7 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
             <Icon name="arrowLeft" size={16} /> Cambiar la hora
           </button>
           <p className="pco-reserva__elegido">
-            <strong>{servicio.name}</strong> · {diaLegible(fecha)} a las{' '}
+            <strong>{servicio.name}{tamano ? <> ({tamano.label})</> : null}</strong> · {diaLegible(fecha)} a las{' '}
             {horaLegible(inicio, estado.business.timezone)}
           </p>
           <div className="pco-reserva__campos">
@@ -495,7 +554,7 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
  * negocio no tiene que explicarlo dos veces: el mismo dato que decide si una
  * hora se puede pulsar decide de qué color se ve el día.
  */
-function Calendario({ mes, dias, cargando, hoy, ultimoDia, onMes, onDia, onVolver, servicio }: {
+function Calendario({ mes, dias, cargando, hoy, ultimoDia, onMes, onDia, onVolver, servicio, tamano }: {
   mes: Date;
   dias: Map<string, DiaDePanorama>;
   cargando: boolean;
@@ -505,6 +564,8 @@ function Calendario({ mes, dias, cargando, hoy, ultimoDia, onMes, onDia, onVolve
   onDia: (fecha: string) => void;
   onVolver: () => void;
   servicio: ServicioPublico;
+  /** El tamaño elegido, cuando el servicio los ofrece. */
+  tamano: TamanoDeServicio | null;
 }) {
   const primero = new Date(mes.getFullYear(), mes.getMonth(), 1);
   const desplazamiento = (primero.getDay() + 6) % 7; // lunes primero
@@ -539,7 +600,7 @@ function Calendario({ mes, dias, cargando, hoy, ultimoDia, onMes, onDia, onVolve
   return (
     <div className="pco-reserva__calendario">
       <button type="button" className="pco-reserva__volver" onClick={onVolver}>
-        <Icon name="arrowLeft" size={16} /> {servicio.name}
+        <Icon name="arrowLeft" size={16} /> {servicio.name}{tamano ? <> · {tamano.label}</> : null}
       </button>
       <div className="pco-reserva__mes">
         <button
