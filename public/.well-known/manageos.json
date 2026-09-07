@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "ecosystem": "manageos",
+  "site": {
+    "name": "Peluquería canina MARCOS Arriaza",
+    "niche": "peluqueria-canina"
+  },
+  "business": {
+    "timezone": "Europe/Madrid",
+    "contactEmail": "",
+    "contactPhone": "619 62 44 49",
+    "address": "C. de Arriaza, 7 · Madrid",
+    "hours": [
+      { "isoWeekday": 1, "startLocal": "10:00", "endLocal": "19:00" },
+      { "isoWeekday": 2, "startLocal": "10:00", "endLocal": "19:00" },
+      { "isoWeekday": 3, "startLocal": "10:00", "endLocal": "19:00" },
+      { "isoWeekday": 4, "startLocal": "10:00", "endLocal": "19:00" },
+      { "isoWeekday": 5, "startLocal": "10:00", "endLocal": "19:00" }
+    ]
+  },
+  "booking": {
+    "slotMinutes": 30,
+    "horizonDays": 31,
+    "minimumLeadMinutes": 60,
+    "fields": [
+      {
+        "key": "nombre",
+        "label": "Tu nombre",
+        "type": "text",
+        "required": true,
+        "target": "customer.firstName",
+        "displayOrder": 0
+      },
+      {
+        "key": "apellidos",
+        "label": "Apellidos",
+        "type": "text",
+        "required": false,
+        "target": "customer.lastName",
+        "displayOrder": 1
+      },
+      {
+        "key": "telefono",
+        "label": "Teléfono",
+        "type": "phone",
+        "required": true,
+        "target": "customer.phone",
+        "help": "Te avisamos si hay cualquier cambio con la cita",
+        "displayOrder": 2
+      },
+      {
+        "key": "email",
+        "label": "Correo electrónico",
+        "type": "email",
+        "required": false,
+        "target": "customer.email",
+        "displayOrder": 3
+      },
+      {
+        "key": "nombre_mascota",
+        "label": "Nombre de tu perro",
+        "type": "text",
+        "required": true,
+        "target": "detail",
+        "displayOrder": 4
+      },
+      {
+        "key": "raza",
+        "label": "Raza o mezcla",
+        "type": "text",
+        "required": false,
+        "target": "detail",
+        "help": "Nos ayuda a preparar el tipo de corte y el tiempo",
+        "displayOrder": 5
+      },
+      {
+        "key": "tamano",
+        "label": "Tamaño",
+        "type": "selection",
+        "required": true,
+        "target": "detail",
+        "options": ["Mini (hasta 5 kg)", "Pequeño (5–10 kg)", "Mediano (10–25 kg)", "Grande (más de 25 kg)"],
+        "displayOrder": 6
+      },
+      {
+        "key": "estado_del_manto",
+        "label": "¿Cómo está el pelo?",
+        "type": "selection",
+        "required": false,
+        "target": "detail",
+        "options": ["Sin nudos", "Algún nudo", "Bastante enredado", "No sabría decir"],
+        "help": "Un manto muy enredado necesita más tiempo",
+        "displayOrder": 7
+      },
+      {
+        "key": "primera_visita",
+        "label": "Es su primera vez aquí",
+        "type": "boolean",
+        "required": false,
+        "target": "detail",
+        "displayOrder": 8
+      },
+      {
+        "key": "notas",
+        "label": "Alergias, miedos o algo que debamos saber",
+        "type": "long_text",
+        "required": false,
+        "target": "detail",
+        "help": "Cualquier cosa que ayude a que se sienta cómodo",
+        "displayOrder": 9
+      }
+    ]
+  },
+  "services": [
+    {
+      "key": "bano-y-secado",
+      "name": "Baño y secado",
+      "description": "Baño con champú elegido según el manto y la piel, aclarado completo y secado profesional con cepillado.",
+      "durationMinutes": 60,
+      "priceMinor": 2000,
+      "currency": "EUR",
+      "priceMode": "from",
+      "displayOrder": 0
+    },
+    {
+      "key": "corte-y-estilismo",
+      "name": "Corte y estilismo",
+      "description": "Corte de raza o comercial acordado contigo, con perfilado de cara y patas y acabado a máquina o tijera.",
+      "durationMinutes": 90,
+      "priceMinor": 3000,
+      "currency": "EUR",
+      "priceMode": "from",
+      "displayOrder": 1
+    },
+    {
+      "key": "deslanado",
+      "name": "Deslanado",
+      "description": "Retirada del subpelo muerto en razas de doble manto, con cepillado profundo y secado.",
+      "durationMinutes": 90,
+      "priceMinor": 3500,
+      "currency": "EUR",
+      "priceMode": "from",
+      "displayOrder": 2
+    },
+    {
+      "key": "spa-y-tratamientos",
+      "name": "Spa y tratamientos",
+      "description": "Tratamiento hidratante o calmante según la piel, con masaje y acabado.",
+      "durationMinutes": 60,
+      "priceMinor": 2800,
+      "currency": "EUR",
+      "priceMode": "from",
+      "displayOrder": 3
+    },
+    {
+      "key": "corte-de-unas",
+      "name": "Corte de uñas e higiene",
+      "description": "Corte de uñas, limpieza de oídos y zona perianal. Ideal entre visitas completas.",
+      "durationMinutes": 30,
+      "priceMinor": 1200,
+      "currency": "EUR",
+      "priceMode": "fixed",
+      "displayOrder": 4
+    }
+  ],
+  "workers": []
+}

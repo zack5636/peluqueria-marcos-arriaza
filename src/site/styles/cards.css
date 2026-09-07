@@ -1,0 +1,137 @@
+/**
+ * Contrato de las filas comparables de tarjetas.
+ *
+ * Se aplica a planes, precios, bonos, paquetes, servicios y cualquier fila en la
+ * que el visitante compare opciones. El objetivo es que los botones queden
+ * alineados en la misma línea aunque una tarjeta tenga más texto que otra.
+ *
+ * Cómo se consigue:
+ *   · La rejilla usa `align-items: stretch` (valor por defecto que aquí se hace
+ *     explícito) y `grid-auto-rows: 1fr`, de modo que todas las tarjetas de una
+ *     fila comparten la altura de la más alta.
+ *   · Cada tarjeta es una columna flex. El cuerpo (`[data-wf-card-body]`) crece
+ *     con `flex: 1 1 auto` y absorbe la diferencia de texto.
+ *   · La zona de acciones (`[data-wf-card-actions]`) se empuja al final con
+ *     `margin-block-start: auto`, que es la distribución del propio flex y no un
+ *     margen fijo calculado a mano. Todas las tarjetas usan la misma regla.
+ *
+ * Una tarjeta puede crecer verticalmente por su contenido; lo que no puede es
+ * dejar su botón a una altura distinta a la de sus vecinas de fila.
+ */
+
+[data-wf-card-row] {
+  display: grid;
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+  gap: var(--wf-card-row-gap, 24px);
+  /* `minmax(0, …)` evita que un texto largo desborde la columna. */
+  grid-template-columns: repeat(var(--wf-card-row-columns, 3), minmax(0, 1fr));
+}
+
+[data-wf-card-row] > * {
+  min-width: 0;
+}
+
+/**
+ * La tarjeta ocupa toda la altura de su celda. `height: 100%` es necesario
+ * porque el hijo directo de la rejilla puede ser un enlace o un artículo.
+ */
+[data-wf-card-row] [data-wf-card],
+[data-wf-card] {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+}
+
+[data-wf-card-body] {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--wf-card-body-gap, 10px);
+}
+
+/**
+ * Empuja las acciones al fondo. Es la única regla que las posiciona: no hay
+ * márgenes distintos por tarjeta ni rellenos compensatorios.
+ */
+[data-wf-card-actions] {
+  margin-block-start: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding-block-start: var(--wf-card-actions-space, 16px);
+}
+
+/**
+ * Fila con zonas alineadas: además de igualar la altura de las tarjetas, hace
+ * que cabecera, precio, contenido y acciones ocupen la misma banda en todas.
+ * Se usa en planes y bonos, donde comparar exige que los precios estén a la
+ * misma altura.
+ *
+ * La tarjeta declara exactamente cuatro hijos —cabecera, precio, cuerpo y
+ * acciones— y solo el cuerpo absorbe la diferencia de texto. Las tres bandas
+ * restantes se dimensionan por su contenido, así que para que coincidan entre
+ * tarjetas la cabecera reserva el espacio del distintivo aunque no lo tenga
+ * (`[data-wf-card-flag-slot]`), en lugar de encogerse cuando falta.
+ */
+[data-wf-card-row][data-wf-card-aligned='true'] [data-wf-card] {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  align-content: stretch;
+}
+[data-wf-card-row][data-wf-card-aligned='true'] [data-wf-card-body] {
+  display: block;
+  min-height: 0;
+}
+[data-wf-card-row][data-wf-card-aligned='true'] [data-wf-card-actions] {
+  margin-block-start: 0;
+  align-self: end;
+}
+
+/**
+ * Reserva del distintivo. Mantener la banda ocupada es lo que permite que la
+ * cabecera y, con ella, el precio queden a la misma altura en toda la fila.
+ */
+[data-wf-card-flag-slot] {
+  /*
+   * `flex` en lugar de `block`: un distintivo en línea genera una caja de línea
+   * con interlineado propio, así que el hueco medía más lleno que vacío y el
+   * precio de la tarjeta destacada quedaba unos píxeles más abajo. Como caja
+   * flexible, ocupa exactamente la altura reservada en ambos estados.
+   */
+  display: flex;
+  align-items: center;
+  min-block-size: var(--wf-card-flag-height, 1.7em);
+}
+
+/* --------------------------- Respuesta responsive ------------------------- */
+
+@media (max-width: 1100px) {
+  [data-wf-card-row] {
+    grid-template-columns: repeat(var(--wf-card-row-columns-tablet, 2), minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  [data-wf-card-row] {
+    grid-template-columns: minmax(0, 1fr);
+    /* En una sola columna igualar alturas solo añade huecos vacíos. */
+    grid-auto-rows: auto;
+  }
+  [data-wf-card-row][data-wf-card-aligned='true'] [data-wf-card] {
+    grid-template-rows: none;
+  }
+}
+
+/**
+ * La tarjeta destacada conserva la misma geometría que sus vecinas. Los temas
+ * pueden distinguirla con borde, color o sombra sin alterar las bandas que se
+ * comparan visualmente.
+ */
+[data-wf-card][data-wf-card-highlight='true'] {
+  position: relative;
+  z-index: 1;
+}

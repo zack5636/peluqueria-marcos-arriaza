@@ -1,0 +1,413 @@
+/**
+ * Implementación del sistema de animaciones.
+ *
+ * Todo se engancha a los atributos `data-wf-motion-*` que pone el renderer y a
+ * las variables `--wf-motion-*` que calcula `motion.ts`, de modo que la preview
+ * del Admin, la web pública y la exportación se comportan igual.
+ *
+ * Invariantes de layout:
+ *   · Solo se animan `transform`, `opacity`, `filter` y `box-shadow`.
+ *   · Un elemento pendiente de aparecer usa `opacity: 0`, nunca `display: none`,
+ *     así que conserva su espacio y no provoca saltos ni cambios de altura.
+ *   · Las elevaciones son `translate`, que no desplaza a los elementos vecinos.
+ *   · Ninguna animación desborda horizontalmente: los recorridos laterales se
+ *     aplican dentro de contenedores con `overflow` controlado.
+ */
+
+/* -------------------------------------------------------------------------- */
+/*                            Aparición al desplazarse                        */
+/* -------------------------------------------------------------------------- */
+
+[data-wf-entry] {
+  opacity: 0;
+  transition:
+    opacity var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--wf-entry-delay, 0ms),
+    transform var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--wf-entry-delay, 0ms),
+    filter var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--wf-entry-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-wf-entry].is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: auto;
+}
+
+/* Sin JavaScript o con la sección desactivada, el contenido se ve igualmente. */
+[data-wf-entry='none'],
+[data-wf-motion='ninguna'] [data-wf-entry] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+[data-wf-entry='fade'] { transform: none; }
+[data-wf-entry='fade-up'] { transform: translate3d(0, var(--wf-motion-distance, 28px), 0); }
+[data-wf-entry='fade-down'] { transform: translate3d(0, calc(-1 * var(--wf-motion-distance, 28px)), 0); }
+[data-wf-entry='slide-left'] { transform: translate3d(var(--wf-motion-distance, 28px), 0, 0); }
+[data-wf-entry='slide-right'] { transform: translate3d(calc(-1 * var(--wf-motion-distance, 28px)), 0, 0); }
+[data-wf-entry='zoom-in'] { transform: scale(calc(2 - var(--wf-motion-scale, 1.04))); }
+[data-wf-entry='blur-in'] { filter: blur(var(--wf-motion-blur, 8px)); }
+[data-wf-entry='rise'] {
+  transform: translate3d(0, calc(var(--wf-motion-distance, 28px) * 2), 0);
+  transition-timing-function: cubic-bezier(0.16, 1.08, 0.3, 1);
+}
+
+/* Revelado tras máscara: el recorte no cambia la caja del elemento. */
+[data-wf-entry='reveal-up'] {
+  clip-path: inset(100% 0 0 0);
+  transform: translate3d(0, calc(var(--wf-motion-distance, 28px) * 0.4), 0);
+  transition:
+    opacity var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--wf-entry-delay, 0ms),
+    transform var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--wf-entry-delay, 0ms),
+    clip-path var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1)) var(--wf-entry-delay, 0ms);
+}
+[data-wf-entry='reveal-up'].is-in { clip-path: inset(0 0 0 0); }
+
+/* En móvil los recorridos laterales pasan a verticales: evitan el desborde. */
+@media (max-width: 720px) {
+  [data-wf-entry='slide-left'],
+  [data-wf-entry='slide-right'] {
+    transform: translate3d(0, var(--wf-motion-distance, 28px), 0);
+  }
+  [data-wf-entry] {
+    --wf-motion-distance: calc(var(--wf-motion-distance-base, 28px) * 0.5);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  Tarjetas                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * La elevación nunca empuja a las tarjetas vecinas porque `translate` no
+ * participa en el flujo. La sombra crece en su propio compositor.
+ */
+[data-wf-card] {
+  transition:
+    transform var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    box-shadow var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+[data-wf-motion-cards='lift'] [data-wf-card]:hover,
+[data-wf-motion-cards='lift'] [data-wf-card]:focus-within {
+  transform: translate3d(0, calc(-1 * var(--wf-motion-lift, 10px)), 0);
+  box-shadow: var(--wf-shadow-float, 0 18px 40px rgba(15, 23, 42, 0.16));
+}
+
+[data-wf-motion-cards='lift-glow'] [data-wf-card]:hover,
+[data-wf-motion-cards='lift-glow'] [data-wf-card]:focus-within {
+  transform: translate3d(0, calc(-1 * var(--wf-motion-lift, 10px)), 0);
+  box-shadow:
+    var(--wf-shadow-float, 0 18px 40px rgba(15, 23, 42, 0.16)),
+    0 0 0 1px color-mix(in srgb, var(--wf-motion-accent, var(--wf-brand-primary)) 55%, transparent);
+  border-color: color-mix(in srgb, var(--wf-motion-accent, var(--wf-brand-primary)) 60%, transparent);
+}
+
+[data-wf-motion-cards='lift-media'] [data-wf-card]:hover,
+[data-wf-motion-cards='lift-media'] [data-wf-card]:focus-within {
+  transform: translate3d(0, calc(-1 * var(--wf-motion-lift, 10px)), 0);
+  box-shadow: var(--wf-shadow-float, 0 18px 40px rgba(15, 23, 42, 0.16));
+}
+/* Movimiento coordinado de los elementos internos. */
+[data-wf-motion-cards='lift-media'] [data-wf-card]:hover [data-wf-card-media] img,
+[data-wf-motion-cards='lift-media'] [data-wf-card]:focus-within [data-wf-card-media] img {
+  transform: scale(var(--wf-motion-scale, 1.04));
+}
+[data-wf-motion-cards='lift-media'] [data-wf-card]:hover [data-wf-card-icon],
+[data-wf-motion-cards='lift-media'] [data-wf-card]:focus-within [data-wf-card-icon] {
+  transform: translate3d(0, calc(-0.35 * var(--wf-motion-lift, 10px)), 0);
+}
+
+[data-wf-motion-cards='border-draw'] [data-wf-card] {
+  position: relative;
+  isolation: isolate;
+}
+[data-wf-motion-cards='border-draw'] [data-wf-card]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid color-mix(in srgb, var(--wf-motion-accent, var(--wf-brand-primary)) 75%, transparent);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1));
+  pointer-events: none;
+}
+[data-wf-motion-cards='border-draw'] [data-wf-card]:hover::after,
+[data-wf-motion-cards='border-draw'] [data-wf-card]:focus-within::after {
+  clip-path: inset(0 0 0 0);
+}
+
+[data-wf-motion-cards='tilt'] [data-wf-card]:hover {
+  transform: perspective(900px) rotateX(1.6deg) rotateY(-1.6deg) translate3d(0, calc(-0.6 * var(--wf-motion-lift, 10px)), 0);
+  box-shadow: var(--wf-shadow-float, 0 18px 40px rgba(15, 23, 42, 0.16));
+}
+@media (hover: none) {
+  [data-wf-motion-cards='tilt'] [data-wf-card]:hover { transform: none; }
+}
+
+[data-wf-card-media] img,
+[data-wf-card-icon] {
+  transition: transform var(--wf-motion-duration, 520ms) var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  Imágenes                                   */
+/* -------------------------------------------------------------------------- */
+
+@keyframes wf-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, calc(-0.6 * var(--wf-motion-distance, 28px)), 0); }
+}
+@keyframes wf-zoom-slow {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(var(--wf-motion-scale, 1.04)); }
+}
+@keyframes wf-ken-burns {
+  0% { transform: scale(1) translate3d(0, 0, 0); }
+  50% { transform: scale(var(--wf-motion-scale, 1.04)) translate3d(calc(-0.3 * var(--wf-motion-distance, 28px)), calc(-0.2 * var(--wf-motion-distance, 28px)), 0); }
+  100% { transform: scale(1) translate3d(0, 0, 0); }
+}
+
+[data-wf-motion-images='drift'] [data-wf-motion-image] {
+  animation: wf-drift 14s ease-in-out infinite;
+}
+[data-wf-motion-images='zoom-slow'] [data-wf-motion-image] {
+  animation: wf-zoom-slow 18s ease-in-out infinite;
+}
+[data-wf-motion-images='ken-burns'] [data-wf-motion-image] {
+  animation: wf-ken-burns 22s ease-in-out infinite;
+}
+[data-wf-motion-images='parallax'] [data-wf-motion-image] {
+  will-change: transform;
+}
+@media (max-width: 720px) {
+  /* El parallax se desactiva en móvil por coste de composición. */
+  [data-wf-motion-images='parallax'] [data-wf-motion-image] { transform: none !important; }
+}
+
+/* El contenedor recorta el sobrante para que el zoom no genere scroll lateral. */
+[data-wf-motion-image] { display: block; }
+[data-wf-card-media],
+[data-wf-media-frame] { overflow: hidden; }
+
+/* -------------------------------------------------------------------------- */
+/*                                   Fondos                                    */
+/* -------------------------------------------------------------------------- */
+
+@keyframes wf-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes wf-float-shape {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(2.5%, -3.5%, 0) scale(1.05); }
+  66% { transform: translate3d(-2%, 2.5%, 0) scale(0.97); }
+}
+
+[data-wf-motion-background='gradient-shift'] [data-wf-motion-band] {
+  background-size: 220% 220%;
+  animation: wf-gradient-shift 18s ease-in-out infinite;
+}
+
+[data-wf-motion-background='floating-shapes'] [data-wf-motion-shape],
+[data-wf-motion-background='aurora'] [data-wf-motion-shape] {
+  animation: wf-float-shape 20s ease-in-out infinite;
+  opacity: calc(0.5 * var(--wf-motion-ambient, 1));
+}
+[data-wf-motion-background='floating-shapes'] [data-wf-motion-shape]:nth-child(2n),
+[data-wf-motion-background='aurora'] [data-wf-motion-shape]:nth-child(2n) {
+  animation-duration: 26s;
+  animation-direction: reverse;
+}
+[data-wf-motion-background='aurora'] [data-wf-motion-shape] {
+  filter: blur(48px);
+  opacity: calc(0.42 * var(--wf-motion-ambient, 1));
+}
+[data-wf-motion-background='none'] [data-wf-motion-shape] { animation: none; }
+
+/* Las formas decorativas nunca generan barra horizontal ni capturan el ratón. */
+[data-wf-motion-shape] {
+  pointer-events: none;
+  position: absolute;
+}
+[data-wf-motion-layer] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+@media (max-width: 720px) {
+  [data-wf-motion-background='aurora'] [data-wf-motion-shape] { animation: none; }
+  [data-wf-motion-background='floating-shapes'] [data-wf-motion-shape]:nth-child(n + 3) { display: none; }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  Cabecera                                   */
+/* -------------------------------------------------------------------------- */
+
+[data-wf-motion-header='shrink'] [data-wf-header] {
+  transition: padding-block var(--wf-motion-duration, 520ms) var(--wf-easing, ease), box-shadow var(--wf-motion-duration, 520ms) var(--wf-easing, ease);
+}
+[data-wf-motion-header='solid'] [data-wf-header] {
+  transition: background-color var(--wf-motion-duration, 520ms) var(--wf-easing, ease), box-shadow var(--wf-motion-duration, 520ms) var(--wf-easing, ease);
+}
+[data-wf-motion-header='hide-on-scroll'] [data-wf-header] {
+  transition: transform var(--wf-motion-duration, 520ms) var(--wf-easing, ease);
+}
+[data-wf-motion-header='hide-on-scroll'] [data-wf-header][data-wf-header-hidden='true'] {
+  transform: translate3d(0, -100%, 0);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  Botones                                    */
+/* -------------------------------------------------------------------------- */
+
+[data-wf-motion-buttons='press'] [data-wf-button]:active {
+  transform: translate3d(0, 1px, 0) scale(0.985);
+}
+[data-wf-motion-buttons='glow'] [data-wf-button] {
+  position: relative;
+  transition: transform var(--wf-motion-duration, 520ms) var(--wf-easing, ease), box-shadow var(--wf-motion-duration, 520ms) var(--wf-easing, ease);
+}
+[data-wf-motion-buttons='glow'] [data-wf-button]:hover {
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--wf-motion-accent, var(--wf-brand-primary)) 42%, transparent);
+}
+[data-wf-motion-buttons='sweep'] [data-wf-button] {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+[data-wf-motion-buttons='sweep'] [data-wf-button]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    color-mix(in srgb, #fff 34%, transparent) 50%,
+    transparent 80%
+  );
+  transform: translate3d(-120%, 0, 0);
+  transition: transform 620ms var(--wf-easing, cubic-bezier(0.22, 1, 0.36, 1));
+}
+[data-wf-motion-buttons='sweep'] [data-wf-button]:hover::before {
+  transform: translate3d(120%, 0, 0);
+}
+
+[data-wf-button] {
+  transition: transform var(--wf-motion-duration, 520ms) var(--wf-easing, ease), box-shadow var(--wf-motion-duration, 520ms) var(--wf-easing, ease), background-color 180ms ease, color 180ms ease;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   Iconos                                    */
+/* -------------------------------------------------------------------------- */
+
+@keyframes wf-icon-pulse {
+  0%, 100% { transform: scale(1); }
+  45% { transform: scale(calc(1 + 0.12 * var(--wf-motion-amplitude, 1))); }
+}
+@keyframes wf-icon-bounce {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  40% { transform: translate3d(0, calc(-0.35 * var(--wf-motion-lift, 10px)), 0); }
+}
+@keyframes wf-icon-draw {
+  from { stroke-dashoffset: var(--wf-icon-length, 120); }
+  to { stroke-dashoffset: 0; }
+}
+
+[data-wf-motion-icons='pulse'] [data-wf-motion-icon].is-in { animation: wf-icon-pulse 900ms var(--wf-easing, ease) 1; }
+[data-wf-motion-icons='bounce'] [data-wf-motion-icon].is-in { animation: wf-icon-bounce 800ms var(--wf-easing, ease) 1; }
+[data-wf-motion-icons='draw'] [data-wf-motion-icon].is-in path,
+[data-wf-motion-icons='draw'] [data-wf-motion-icon].is-in circle {
+  stroke-dasharray: var(--wf-icon-length, 120);
+  animation: wf-icon-draw 1100ms var(--wf-easing, ease) 1 forwards;
+}
+[data-wf-motion-icons='pulse'] [data-wf-card]:hover [data-wf-motion-icon] { animation: wf-icon-pulse 700ms var(--wf-easing, ease) 1; }
+
+/* -------------------------------------------------------------------------- */
+/*                          Galería y transición de página                     */
+/* -------------------------------------------------------------------------- */
+
+[data-wf-motion-gallery='fade'] [data-wf-gallery-item] {
+  transition: opacity var(--wf-motion-duration, 520ms) var(--wf-easing, ease);
+}
+[data-wf-motion-gallery='slide'] [data-wf-gallery-item] {
+  transition: transform var(--wf-motion-duration, 520ms) var(--wf-easing, ease), opacity var(--wf-motion-duration, 520ms) var(--wf-easing, ease);
+}
+[data-wf-motion-gallery='zoom'] [data-wf-gallery-item] {
+  transition: transform var(--wf-motion-duration, 520ms) var(--wf-easing, ease), opacity var(--wf-motion-duration, 520ms) var(--wf-easing, ease);
+}
+[data-wf-motion-gallery='zoom'] [data-wf-gallery-item][data-wf-entering='true'] {
+  transform: scale(calc(2 - var(--wf-motion-scale, 1.04)));
+  opacity: 0;
+}
+
+@keyframes wf-page-in {
+  from { opacity: 0; transform: translate3d(0, calc(0.4 * var(--wf-motion-distance, 28px)), 0); }
+  to { opacity: 1; transform: none; }
+}
+[data-wf-motion-transitions='true'] [data-wf-page] {
+  animation: wf-page-in var(--wf-motion-duration, 520ms) var(--wf-easing, ease) 1;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                             Reducción de movimiento                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Cierre definitivo: aunque una variante añada su propia animación, aquí se
+ * neutraliza. El contenido queda visible y en su posición final.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-wf-entry],
+  [data-wf-entry].is-in {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+
+  [data-wf-motion-image],
+  [data-wf-motion-shape],
+  [data-wf-motion-band],
+  [data-wf-motion-icon],
+  [data-wf-page] {
+    animation: none !important;
+  }
+
+  [data-wf-card],
+  [data-wf-card]:hover,
+  [data-wf-card]:focus-within,
+  [data-wf-button],
+  [data-wf-button]:hover,
+  [data-wf-button]:active,
+  [data-wf-card-media] img,
+  [data-wf-card-icon] {
+    transform: none !important;
+    transition-duration: 1ms !important;
+  }
+
+  [data-wf-motion-buttons='sweep'] [data-wf-button]::before { display: none; }
+  [data-wf-motion-cards='border-draw'] [data-wf-card]::after { clip-path: inset(0 0 0 0); transition: none; }
+}
+
+/* El mismo cierre cuando el usuario elige «Sin animaciones» en el Admin. */
+[data-wf-motion='ninguna'] [data-wf-motion-image],
+[data-wf-motion='ninguna'] [data-wf-motion-shape],
+[data-wf-motion='ninguna'] [data-wf-motion-band],
+[data-wf-motion='ninguna'] [data-wf-motion-icon],
+[data-wf-motion='ninguna'] [data-wf-page] {
+  animation: none !important;
+}
+[data-wf-motion='ninguna'] [data-wf-card]:hover,
+[data-wf-motion='ninguna'] [data-wf-card]:focus-within {
+  transform: none;
+}

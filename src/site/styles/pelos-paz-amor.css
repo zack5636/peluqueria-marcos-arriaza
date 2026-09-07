@@ -1,0 +1,795 @@
+/* ==========================================================================
+   Pelos, Paz y Amor — spa editorial marfil y dorado.
+   Personalidad: hero fotográfico a sangre, servicios altos con listas,
+   comparadores arrastrables, proceso de cuatro pasos y mosaico de cuatro áreas.
+   ========================================================================== */
+
+.ppa-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--wf-surface);
+  border-bottom: 1px solid transparent;
+  transition: box-shadow var(--wf-duration-base) var(--wf-easing), border-color var(--wf-duration-base) var(--wf-easing);
+}
+
+.ppa-header.is-stuck {
+  box-shadow: 0 2px 12px rgb(24 23 19 / 7%);
+  border-bottom-color: var(--wf-border);
+}
+
+.ppa-header__inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.4rem;
+  min-height: 82px;
+}
+
+.ppa-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+}
+
+.ppa-brand__mark {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  color: var(--wf-brand-primary);
+  flex: none;
+}
+
+.ppa-brand__text {
+  display: grid;
+  line-height: 1.2;
+}
+
+.ppa-brand__text strong {
+  font-family: var(--wf-font-display);
+  font-weight: var(--wf-display-weight);
+  font-size: 1.12rem;
+}
+
+.ppa-brand__text small {
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted);
+}
+
+/* Sin envoltura: primero se comprimen espacios y tipografia, y cuando ya no
+   cabe el menu completo entra la navegacion compacta. */
+.ppa-nav {
+  min-width: 0;
+}
+
+.ppa-nav ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(0rem, 0.5vw, 0.3rem);
+  flex-wrap: nowrap;
+}
+
+.ppa-nav li {
+  flex: 0 0 auto;
+}
+
+.ppa-nav button {
+  position: relative;
+  min-height: 44px;
+  padding: 0.4rem clamp(0.32rem, 0.7vw, 0.65rem);
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: clamp(0.8rem, 0.92vw, 0.9rem);
+  font-weight: 500;
+  color: var(--wf-text-muted);
+  cursor: pointer;
+}
+
+.ppa-nav button:hover,
+.ppa-nav button.is-active {
+  color: var(--wf-brand-primary);
+}
+
+.ppa-nav button.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0.65rem;
+  right: 0.65rem;
+  bottom: 8px;
+  height: 1px;
+  background: var(--wf-brand-primary);
+}
+
+.ppa-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ppa-header__wa {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--wf-border);
+  background: var(--wf-surface);
+  color: var(--wf-whatsapp);
+  cursor: pointer;
+}
+
+.ppa-header__wa:hover {
+  border-color: var(--wf-whatsapp);
+}
+
+.ppa-burger {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  border: 1px solid var(--wf-border);
+  background: var(--wf-surface);
+  color: var(--wf-text);
+  cursor: pointer;
+}
+
+/* --------------------------------- Hero --------------------------------- */
+
+.ppa-hero {
+  position: relative;
+  min-height: 460px;
+  display: grid;
+  align-items: center;
+  isolation: isolate;
+  background: var(--wf-hero-background);
+}
+
+.ppa-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.ppa-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ppa-hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--wf-surface-alt) 94%, transparent) 0%,
+    color-mix(in srgb, var(--wf-surface-alt) 86%, transparent) 38%,
+    transparent 62%
+  );
+}
+
+.ppa-hero__inner {
+  padding-block: 3.4rem;
+}
+
+.ppa-hero__copy {
+  max-width: 43%;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.ppa-hero__accent {
+  color: var(--wf-brand-primary);
+}
+
+.ppa-hero__lead {
+  font-size: 1.02rem;
+  color: var(--wf-text-muted);
+  max-width: 46ch;
+}
+
+.ppa-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ppa-hero__benefits {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem 1.2rem;
+  margin-top: 0.6rem;
+}
+
+.ppa-hero__benefits li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.ppa-hero__benefits span {
+  display: grid;
+  line-height: 1.25;
+}
+
+.ppa-hero__benefits strong {
+  font-size: 0.86rem;
+}
+
+.ppa-hero__benefits small {
+  font-size: 0.75rem;
+  color: var(--wf-text-muted);
+}
+
+/* ------------------------------- Servicios ------------------------------ */
+
+.ppa-services__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.1rem;
+  align-items: stretch;
+}
+
+.ppa-service {
+  position: relative;
+  display: grid;
+  gap: 0.7rem;
+  align-content: start;
+  padding: 1.5rem 1.2rem;
+}
+
+.ppa-service h3 {
+  font-size: 1.08rem;
+}
+
+.ppa-service__sub {
+  font-size: 0.84rem;
+  color: var(--wf-text-muted);
+  margin-top: -0.3rem;
+}
+
+.ppa-service .wf-includes {
+  margin-block: 0.3rem;
+}
+
+.ppa-service .wf-price {
+  margin-top: auto;
+  font-size: 1.55rem;
+  color: var(--wf-brand-primary);
+}
+
+.ppa-services__note {
+  margin-top: 1.4rem;
+  text-align: center;
+}
+
+/* ---------------------------- Transformaciones -------------------------- */
+
+.ppa-transformations__inner {
+  display: grid;
+  grid-template-columns: 25% 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.ppa-transformations__editorial {
+  display: grid;
+  gap: 0.4rem;
+  justify-items: start;
+}
+
+.ppa-transformations__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* --------------------------------- Proceso ------------------------------ */
+
+.ppa-process__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.4rem;
+  position: relative;
+}
+
+.ppa-process__grid::before {
+  content: '';
+  position: absolute;
+  top: 46px;
+  left: 12%;
+  right: 12%;
+  border-top: 2px dashed var(--wf-border-strong);
+  z-index: 0;
+}
+
+.ppa-process__grid li {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.ppa-process__num {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(24px);
+  font-family: var(--wf-font-display);
+  font-size: 1.1rem;
+  font-weight: var(--wf-display-weight);
+  color: var(--wf-brand-primary);
+}
+
+.ppa-process__grid h3 {
+  font-size: 1rem;
+}
+
+.ppa-process__grid p {
+  font-size: 0.86rem;
+  color: var(--wf-text-muted);
+  max-width: 30ch;
+}
+
+/* --------------------------------- Mosaico ------------------------------- */
+
+.ppa-mosaic {
+  display: grid;
+  grid-template-columns: 29% 34% 21% 1fr;
+  background: var(--wf-surface);
+}
+
+.ppa-mosaic__cell {
+  padding: 2.6rem 1.6rem;
+}
+
+.ppa-mosaic__testimonials {
+  background: var(--wf-surface-alt);
+}
+
+.ppa-mosaic__team {
+  background: var(--wf-surface);
+}
+
+.ppa-mosaic__reasons {
+  background: var(--wf-surface-alt);
+}
+
+.ppa-mosaic__ambience {
+  padding: 0;
+  min-height: 100%;
+}
+
+.ppa-mosaic__ambience img {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  object-fit: cover;
+}
+
+.ppa-mosaic__title {
+  font-size: 1.2rem;
+  margin-bottom: 1.1rem;
+}
+
+.ppa-testimonial {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1.2rem;
+}
+
+.ppa-testimonial p {
+  font-size: 0.9rem;
+  color: var(--wf-text-muted);
+  font-style: italic;
+}
+
+.ppa-testimonial footer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ppa-testimonial footer span {
+  display: grid;
+  line-height: 1.25;
+}
+
+.ppa-testimonial footer strong {
+  font-size: 0.86rem;
+}
+
+.ppa-testimonial footer small {
+  font-size: 0.75rem;
+  color: var(--wf-text-muted);
+}
+
+.ppa-testimonial__avatar,
+.ppa-team__detail-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  overflow: hidden;
+  flex: none;
+  background: var(--wf-surface-muted);
+}
+
+.ppa-team__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.ppa-team__card {
+  display: grid;
+  gap: 0.3rem;
+  justify-items: center;
+  text-align: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.ppa-team__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--wf-radius-image);
+  overflow: hidden;
+  background: var(--wf-surface-muted);
+  margin-bottom: 0.35rem;
+}
+
+.ppa-team__card:hover .ppa-team__photo {
+  outline: 2px solid var(--wf-brand-primary);
+  outline-offset: 2px;
+}
+
+.ppa-team__card strong {
+  font-size: 0.88rem;
+}
+
+.ppa-team__card small {
+  font-size: 0.75rem;
+  color: var(--wf-text-muted);
+}
+
+.ppa-team__detail {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+}
+
+.ppa-team__detail-photo {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--wf-radius-image);
+}
+
+.ppa-team__role {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--wf-brand-primary);
+}
+
+.ppa-reasons {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.ppa-reasons li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.ppa-reasons li svg {
+  color: var(--wf-brand-primary);
+  flex: none;
+  margin-top: 3px;
+}
+
+.ppa-reasons span {
+  display: grid;
+  line-height: 1.35;
+}
+
+.ppa-reasons strong {
+  font-size: 0.87rem;
+}
+
+.ppa-reasons small {
+  font-size: 0.78rem;
+  color: var(--wf-text-muted);
+}
+
+/* ----------------------------------- FAQ --------------------------------- */
+
+.ppa-faq__accordion {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  align-items: start;
+}
+
+/* ---------------------------------- Footer -------------------------------- */
+
+.ppa-footer {
+  background: var(--wf-surface-alt);
+}
+
+.ppa-footer__grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr;
+  gap: 1.8rem;
+  padding-block: 2.8rem 2rem;
+}
+
+.ppa-footer__brand {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+}
+
+.ppa-footer__brand strong {
+  font-family: var(--wf-font-display);
+  font-size: 1.16rem;
+}
+
+.ppa-footer__brand p {
+  font-size: 0.86rem;
+  color: var(--wf-text-muted);
+  max-width: 32ch;
+}
+
+.ppa-footer h3 {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+  margin-bottom: 0.85rem;
+}
+
+.ppa-footer__contact,
+.ppa-footer__links {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.ppa-footer__contact a,
+.ppa-footer__contact span,
+.ppa-footer__contact button,
+.ppa-footer__links button {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 32px;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--wf-text-muted);
+  text-decoration: none;
+  text-align: start;
+  cursor: pointer;
+}
+
+.ppa-footer__contact span {
+  cursor: default;
+}
+
+.ppa-footer__contact a:hover,
+.ppa-footer__contact button:hover,
+.ppa-footer__links button:hover {
+  color: var(--wf-brand-primary);
+}
+
+.ppa-footer__social-text {
+  font-size: 0.85rem;
+  color: var(--wf-text-muted);
+  margin-bottom: 0.8rem;
+}
+
+.ppa-footer__social {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ppa-footer__social a {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--wf-border);
+  color: var(--wf-brand-primary);
+}
+
+.ppa-footer__social a:hover {
+  border-color: var(--wf-brand-primary);
+}
+
+.ppa-footer__bar {
+  background: var(--wf-brand-primary);
+  color: var(--wf-brand-primary-contrast);
+  padding-block: 0.8rem;
+}
+
+.ppa-footer__bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+}
+
+.ppa-booking__intro {
+  margin-bottom: 1rem;
+}
+
+/* -------------------------------- Responsive ------------------------------ */
+
+@media (max-width: 1023px) {
+  .ppa-nav {
+    display: none;
+  }
+
+  .ppa-burger {
+    display: grid;
+  }
+
+  .ppa-header__inner {
+    grid-template-columns: 1fr auto;
+  }
+
+  .ppa-hero__copy {
+    max-width: 62%;
+  }
+
+  .ppa-services__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ppa-transformations__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .ppa-process__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 2rem;
+  }
+
+  .ppa-process__grid::before {
+    display: none;
+  }
+
+  .ppa-mosaic {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ppa-mosaic__team {
+    grid-column: 1 / -1;
+  }
+
+  .ppa-mosaic__ambience {
+    grid-column: 1 / -1;
+  }
+
+  .ppa-mosaic__ambience img {
+    min-height: 260px;
+  }
+
+  .ppa-faq__accordion {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ppa-footer__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .ppa-hero {
+    min-height: 0;
+  }
+
+  .ppa-hero__media {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 4 / 5;
+    max-height: 62vh;
+  }
+
+  .ppa-hero__veil {
+    display: none;
+  }
+
+  .ppa-hero__inner {
+    padding-block: 2rem;
+    background: var(--wf-surface-alt);
+  }
+
+  .ppa-hero__copy {
+    max-width: 100%;
+  }
+
+  .ppa-hero__ctas .wf-btn {
+    width: 100%;
+  }
+
+  .ppa-services__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ppa-transformations__grid {
+    grid-auto-flow: column;
+    grid-auto-columns: 82%;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .ppa-transformations__grid > * {
+    scroll-snap-align: start;
+  }
+
+  .ppa-process__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ppa-process__grid li {
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    text-align: start;
+    align-items: center;
+    column-gap: 1rem;
+  }
+
+  .ppa-process__grid h3,
+  .ppa-process__grid p {
+    grid-column: 2;
+  }
+
+  .ppa-process__num {
+    position: static;
+    transform: none;
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .ppa-mosaic {
+    grid-template-columns: 1fr;
+  }
+
+  .ppa-team__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ppa-faq__accordion {
+    grid-template-columns: 1fr;
+  }
+
+  .ppa-footer__grid {
+    grid-template-columns: 1fr;
+  }
+}

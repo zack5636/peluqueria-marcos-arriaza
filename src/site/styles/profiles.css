@@ -1,0 +1,983 @@
+/**
+ * Tres familias visuales, tres lenguajes distintos.
+ *
+ * Todo se dibuja con los tokens del tema, así que la paleta y la tipografía de
+ * cada propuesta cambian el carácter sin tocar una regla. Lo que **no** cambia
+ * con los tokens —y es lo que de verdad diferencia a las tres— es la
+ * estructura: proporciones, rejilla, ritmo y tratamiento de imagen.
+ */
+
+/* ========================================================================== */
+/*  PREMIUM — la fotografía manda                                             */
+/* ========================================================================== */
+
+.pf2-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 18px 0;
+  background: transparent;
+  transition: background 280ms var(--wf-easing), padding 280ms var(--wf-easing);
+}
+
+.pf2-header[data-solid='true'] {
+  padding: 10px 0;
+  background: var(--wf-surface-inverse);
+  box-shadow: var(--wf-shadow-float);
+}
+
+.pf2-header__inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.pf2-header__mark {
+  justify-self: start;
+  font-family: var(--wf-font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  color: var(--wf-text-on-dark);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.pf2-header__nav {
+  display: none;
+  gap: 26px;
+}
+
+@media (min-width: 900px) {
+  .pf2-header__nav { display: flex; }
+}
+
+.pf2-header__nav button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--wf-text-muted-on-dark);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 200ms var(--wf-easing);
+}
+
+.pf2-header__nav button:hover { color: var(--wf-text-on-dark); }
+
+.pf2-header__actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pf2-header__burger {
+  display: inline-grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  color: var(--wf-text-on-dark);
+  cursor: pointer;
+}
+
+@media (min-width: 900px) { .pf2-header__burger { display: none; } }
+
+/* --- Hero a sangre -------------------------------------------------------- */
+
+.pf2-hero {
+  position: relative;
+  min-height: clamp(560px, 78vh, 820px);
+  display: flex;
+  align-items: flex-end;
+  /* La reserva superior no es decorativa: el hero se mete debajo de la cabecera
+   * translúcida con el margen negativo, y sin ella un titular largo sube hasta
+   * quedar tapado por la navegación. */
+  padding: clamp(132px, 18vh, 210px) 0 clamp(48px, 8vh, 96px);
+  margin-top: calc(-1 * clamp(64px, 9vh, 92px));
+  color: var(--wf-text-on-dark);
+  overflow: hidden;
+}
+
+.pf2-hero__media {
+  position: absolute;
+  inset: 0;
+}
+
+.pf2-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Velo en degradado: la parte baja se oscurece para que el texto respire. */
+.pf2-hero__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--wf-surface-inverse) 88%, transparent) 0%,
+    color-mix(in srgb, var(--wf-surface-inverse) 55%, transparent) 42%,
+    color-mix(in srgb, var(--wf-surface-inverse) 18%, transparent) 100%
+  );
+}
+
+.pf2-hero__inner {
+  position: relative;
+  display: grid;
+  gap: 36px;
+}
+
+/* Ancho de lectura del titular en display: a 42ch un titular medio salía a
+ * cinco líneas y desbordaba el hero por arriba. */
+.pf2-hero__copy { max-width: min(62ch, 68%); }
+
+.pf2-hero__copy h1 { max-width: 17ch; }
+
+.pf2-hero__eyebrow {
+  display: inline-block;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+  margin-bottom: 18px;
+}
+
+.pf2-hero h1 {
+  font-family: var(--wf-font-display);
+  font-size: clamp(2.4rem, 5vw, 4.1rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--wf-text-on-dark);
+}
+
+.pf2-hero__rule {
+  display: block;
+  width: 72px;
+  height: 2px;
+  background: var(--wf-brand-primary);
+  margin: 26px 0 20px;
+}
+
+.pf2-hero p {
+  font-size: 1.06rem;
+  line-height: 1.65;
+  color: var(--wf-text-muted-on-dark);
+  margin: 0 0 30px;
+}
+
+.pf2-hero__actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.pf2-hero__marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid color-mix(in srgb, var(--wf-text-on-dark) 22%, transparent);
+}
+
+.pf2-hero__marks li {
+  padding: 18px 30px 0 0;
+  margin-right: 30px;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-dark);
+}
+
+/* --- Servicios editoriales ------------------------------------------------ */
+
+.pf2-services { padding-block: clamp(72px, 10vw, 128px); background: var(--wf-surface); }
+
+.pf2-section-head { margin-bottom: clamp(40px, 6vw, 72px); }
+
+.pf2-section-head span {
+  display: block;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+  margin-bottom: 12px;
+}
+
+.pf2-section-head h2 {
+  font-family: var(--wf-font-display);
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  line-height: 1.1;
+  margin: 0;
+  max-width: 18ch;
+  color: var(--wf-text-on-light);
+}
+
+.pf2-services__rows { display: grid; gap: clamp(48px, 7vw, 96px); }
+
+.pf2-row {
+  display: grid;
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .pf2-row { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
+  /* La alternancia es lo que evita que cinco filas se lean como una lista. */
+  .pf2-row[data-flip='true'] .pf2-row__media { order: 2; }
+}
+
+.pf2-row__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--wf-radius-image);
+  background: var(--wf-surface-alt);
+  display: grid;
+  place-items: center;
+}
+
+.pf2-row__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms var(--wf-easing);
+}
+
+.pf2-row:hover .pf2-row__media img { transform: scale(1.05); }
+
+.pf2-row__num {
+  font-family: var(--wf-font-display);
+  font-size: clamp(4rem, 12vw, 9rem);
+  color: color-mix(in srgb, var(--wf-brand-primary) 22%, transparent);
+}
+
+.pf2-row__index {
+  display: block;
+  font-family: var(--wf-font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: var(--wf-brand-primary);
+  margin-bottom: 14px;
+}
+
+.pf2-row__body h3 {
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: 1.15;
+  margin: 0 0 14px;
+  color: var(--wf-text-on-light);
+}
+
+.pf2-row__body p {
+  color: var(--wf-text-muted-on-light);
+  line-height: 1.7;
+  margin: 0 0 18px;
+}
+
+.pf2-row__body ul {
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.pf2-row__body li {
+  padding-left: 18px;
+  position: relative;
+  color: var(--wf-text-muted-on-light);
+  font-size: 0.94rem;
+}
+
+.pf2-row__body li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 7px;
+  height: 1px;
+  background: var(--wf-brand-primary);
+}
+
+.pf2-row__price {
+  font-family: var(--wf-font-display);
+  font-size: 1.05rem;
+  color: var(--wf-text-on-light);
+}
+
+/* --- Cierre --------------------------------------------------------------- */
+
+.pf2-final {
+  padding-block: clamp(64px, 9vw, 112px);
+  background: var(--wf-surface-inverse);
+  color: var(--wf-text-on-dark);
+}
+
+.pf2-final__inner {
+  display: grid;
+  gap: 28px;
+  justify-items: start;
+}
+
+@media (min-width: 900px) {
+  .pf2-final__inner { grid-template-columns: 1fr auto; align-items: center; }
+}
+
+.pf2-final h2 {
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+  line-height: 1.12;
+  margin: 0 0 10px;
+  max-width: 20ch;
+  color: var(--wf-text-on-dark);
+}
+
+.pf2-final p { margin: 0; color: var(--wf-text-muted-on-dark); }
+
+.pf2-footer {
+  background: var(--wf-surface-inverse-soft);
+  color: var(--wf-text-muted-on-dark);
+  padding-block: clamp(48px, 6vw, 80px) 28px;
+}
+
+.pf2-footer__top { margin-bottom: 40px; }
+
+.pf2-footer__mark {
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: var(--wf-text-on-dark);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.pf2-footer__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid color-mix(in srgb, var(--wf-text-on-dark) 16%, transparent);
+}
+
+.pf2-footer__cols h3 {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+  margin: 0 0 14px;
+}
+
+.pf2-footer__cols p,
+.pf2-footer__cols button {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 0.92rem;
+  color: var(--wf-text-muted-on-dark);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pf2-footer__legal { margin: 24px 0 0; font-size: 0.82rem; }
+
+/* ========================================================================== */
+/*  MINIMALISTA — el tipo manda                                               */
+/* ========================================================================== */
+
+.mn2-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--wf-surface);
+  border-bottom: 1px solid var(--wf-border);
+}
+
+.mn2-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding-block: 16px;
+}
+
+.mn2-header__mark {
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  color: var(--wf-text-on-light);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  margin-right: auto;
+}
+
+.mn2-header nav { display: none; gap: 24px; }
+
+@media (min-width: 900px) { .mn2-header nav { display: flex; } }
+
+.mn2-header nav button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--wf-text-muted-on-light);
+  font-size: 0.9rem;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+  transition: color 160ms var(--wf-easing), border-color 160ms var(--wf-easing);
+}
+
+.mn2-header nav button:hover {
+  color: var(--wf-text-on-light);
+  border-bottom-color: var(--wf-text-on-light);
+}
+
+.mn2-header__cta {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--wf-brand-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+@media (min-width: 900px) { .mn2-header__cta { display: inline-flex; } }
+
+.mn2-header__burger {
+  display: inline-grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  color: var(--wf-text-on-light);
+  cursor: pointer;
+}
+
+@media (min-width: 900px) { .mn2-header__burger { display: none; } }
+
+/* --- Hero tipográfico ----------------------------------------------------- */
+
+.mn2-hero {
+  padding-block: clamp(64px, 11vw, 140px) clamp(32px, 5vw, 56px);
+  background: var(--wf-surface);
+}
+
+.mn2-hero__grid {
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: end;
+}
+
+@media (min-width: 900px) {
+  /* Asimetría deliberada: el texto ocupa dos tercios y el chip se descuelga. */
+  .mn2-hero__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); }
+}
+
+.mn2-hero h1 {
+  font-size: clamp(2.4rem, 6.4vw, 5rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  margin: 0 0 24px;
+  color: var(--wf-text-on-light);
+  max-width: 16ch;
+}
+
+.mn2-hero p {
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--wf-text-muted-on-light);
+  margin: 0 0 28px;
+  max-width: 46ch;
+}
+
+.mn2-hero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.mn2-hero__chip {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--wf-radius-image);
+  background: var(--wf-surface-alt);
+}
+
+.mn2-hero__chip img { width: 100%; height: 100%; object-fit: cover; }
+
+.mn2-hero__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0;
+  margin: clamp(40px, 6vw, 72px) 0 0;
+  border-top: 1px solid var(--wf-border);
+}
+
+.mn2-hero__facts div {
+  padding: 20px 20px 0 0;
+  border-right: 1px solid var(--wf-border);
+}
+
+.mn2-hero__facts div:last-child { border-right: 0; }
+
+.mn2-hero__facts dt {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--wf-text-on-light);
+}
+
+.mn2-hero__facts dd {
+  margin: 4px 0 0;
+  font-size: 0.86rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+/* --- Servicios en tabla --------------------------------------------------- */
+
+.mn2-services { padding-block: clamp(56px, 8vw, 104px); background: var(--wf-surface-alt); }
+
+.mn2-section-head { margin-bottom: clamp(28px, 4vw, 48px); }
+
+.mn2-section-head h2 {
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--wf-text-on-light);
+}
+
+.mn2-section-head p { margin: 0; color: var(--wf-text-muted-on-light); }
+
+.mn2-services__table {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--wf-border);
+}
+
+.mn2-services__table li { border-bottom: 1px solid var(--wf-border); }
+
+.mn2-services__table button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 20px;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 4px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--wf-text-on-light);
+  transition: padding-left 200ms var(--wf-easing);
+}
+
+@media (min-width: 760px) {
+  .mn2-services__table button { grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) auto 20px; }
+}
+
+.mn2-services__table button:hover { padding-left: 12px; }
+
+.mn2-services__name { font-size: 1.06rem; font-weight: 600; }
+
+.mn2-services__desc {
+  display: none;
+  color: var(--wf-text-muted-on-light);
+  font-size: 0.92rem;
+}
+
+@media (min-width: 760px) { .mn2-services__desc { display: block; } }
+
+.mn2-services__price {
+  font-variant-numeric: tabular-nums;
+  color: var(--wf-text-muted-on-light);
+  font-size: 0.95rem;
+}
+
+.mn2-services__table svg { color: var(--wf-brand-primary); }
+
+.mn2-final { padding-block: clamp(56px, 8vw, 96px); background: var(--wf-surface); }
+
+.mn2-final__inner {
+  display: grid;
+  gap: 24px;
+  justify-items: center;
+  text-align: center;
+}
+
+.mn2-final h2 {
+  font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  margin: 0;
+  max-width: 22ch;
+  color: var(--wf-text-on-light);
+}
+
+.mn2-footer {
+  padding-block: 40px 24px;
+  background: var(--wf-surface);
+  border-top: 1px solid var(--wf-border);
+}
+
+.mn2-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 24px;
+}
+
+.mn2-footer__mark { font-weight: 600; color: var(--wf-text-on-light); display: block; }
+
+.mn2-footer__inner p { margin: 6px 0 0; color: var(--wf-text-muted-on-light); font-size: 0.9rem; }
+
+.mn2-footer__links { display: flex; gap: 18px; flex-wrap: wrap; }
+
+.mn2-footer__links button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--wf-text-muted-on-light);
+  font-size: 0.88rem;
+}
+
+.mn2-footer__links button:hover { color: var(--wf-text-on-light); }
+
+.mn2-footer__legal {
+  margin: 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--wf-border);
+  font-size: 0.82rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+/* ========================================================================== */
+/*  CONVENCIONAL — la conversión manda                                        */
+/* ========================================================================== */
+
+.cv2-header { position: sticky; top: 0; z-index: 40; }
+
+.cv2-header__utility {
+  background: var(--wf-surface-inverse);
+  color: var(--wf-text-muted-on-dark);
+  font-size: 0.82rem;
+}
+
+.cv2-header__utility-inner {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  padding-block: 8px;
+  flex-wrap: wrap;
+}
+
+.cv2-header__utility button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--wf-text-on-dark);
+  font-weight: 600;
+}
+
+.cv2-header__main {
+  background: var(--wf-surface);
+  border-bottom: 1px solid var(--wf-border);
+  box-shadow: var(--wf-shadow-card);
+}
+
+.cv2-header__main-inner {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding-block: 14px;
+}
+
+.cv2-header__mark {
+  font-family: var(--wf-font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--wf-text-on-light);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  margin-right: auto;
+}
+
+.cv2-header__main nav { display: none; gap: 22px; }
+
+@media (min-width: 1000px) { .cv2-header__main nav { display: flex; } }
+
+.cv2-header__main nav button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--wf-text-on-light);
+  font-size: 0.94rem;
+  font-weight: 500;
+  position: relative;
+  padding-block: 6px;
+}
+
+.cv2-header__main nav button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: 0;
+  height: 2px;
+  background: var(--wf-brand-primary);
+  transition: right 220ms var(--wf-easing);
+}
+
+.cv2-header__main nav button:hover::after { right: 0; }
+
+.cv2-header__burger {
+  display: inline-grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  color: var(--wf-text-on-light);
+  cursor: pointer;
+}
+
+@media (min-width: 1000px) { .cv2-header__burger { display: none; } }
+
+/* --- Hero partido --------------------------------------------------------- */
+
+.cv2-hero { padding-block: clamp(40px, 6vw, 72px); background: var(--wf-surface); }
+
+.cv2-hero__grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .cv2-hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+
+.cv2-hero h1 {
+  font-family: var(--wf-font-display);
+  font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+  line-height: 1.1;
+  margin: 0 0 16px;
+  color: var(--wf-text-on-light);
+}
+
+.cv2-hero p {
+  font-size: 1.04rem;
+  line-height: 1.65;
+  color: var(--wf-text-muted-on-light);
+  margin: 0 0 20px;
+}
+
+.cv2-hero__benefits {
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.cv2-hero__benefits li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--wf-text-on-light);
+  font-weight: 500;
+}
+
+.cv2-hero__benefits svg { color: var(--wf-success); flex: 0 0 auto; }
+
+.cv2-hero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.cv2-hero__media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--wf-radius-card);
+  box-shadow: var(--wf-shadow-float);
+  background: var(--wf-surface-alt);
+}
+
+.cv2-hero__media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- Barra de confianza ---------------------------------------------------- */
+
+.cv2-trust {
+  background: var(--wf-brand-primary);
+  color: var(--wf-text-on-brand);
+  padding-block: 20px;
+}
+
+.cv2-trust__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cv2-trust__row li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.94rem;
+}
+
+.cv2-trust__row strong { font-weight: 600; }
+
+/* --- Servicios en tarjetas ------------------------------------------------- */
+
+.cv2-services { padding-block: clamp(52px, 7vw, 88px); background: var(--wf-surface-alt); }
+
+.cv2-section-head { text-align: center; margin-bottom: clamp(28px, 4vw, 48px); }
+
+.cv2-section-head h2 {
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  margin: 0 0 8px;
+  color: var(--wf-text-on-light);
+}
+
+.cv2-section-head p { margin: 0; color: var(--wf-text-muted-on-light); }
+
+.cv2-services__media { aspect-ratio: 4 / 3; overflow: hidden; }
+
+.cv2-services__media img { width: 100%; height: 100%; object-fit: cover; }
+
+.cv2-services__grid [data-wf-card-body] ul {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.cv2-services__grid [data-wf-card-body] li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.88rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+.cv2-services__grid [data-wf-card-body] svg { color: var(--wf-success); }
+
+.cv2-services__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cv2-services__actions strong { color: var(--wf-text-on-light); font-size: 1rem; }
+
+/* --- Cierre ---------------------------------------------------------------- */
+
+.cv2-final {
+  padding-block: clamp(44px, 6vw, 76px);
+  background: var(--wf-brand-primary);
+  color: var(--wf-text-on-brand);
+}
+
+.cv2-final__inner {
+  display: grid;
+  gap: 24px;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .cv2-final__inner { grid-template-columns: 1fr auto; }
+}
+
+.cv2-final h2 {
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  margin: 0 0 8px;
+  color: var(--wf-text-on-brand);
+}
+
+.cv2-final p { margin: 0; opacity: 0.9; }
+
+.cv2-final__actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+
+.cv2-final__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: var(--wf-radius-button);
+  padding: 12px 20px;
+  color: var(--wf-text-on-brand);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cv2-footer { background: var(--wf-surface-inverse); color: var(--wf-text-muted-on-dark); }
+
+.cv2-footer__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  padding-block: clamp(40px, 5vw, 64px);
+}
+
+.cv2-footer__mark {
+  font-family: var(--wf-font-display);
+  font-size: 1.3rem;
+  color: var(--wf-text-on-dark);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.cv2-footer__cols h3 {
+  font-size: 0.9rem;
+  color: var(--wf-text-on-dark);
+  margin: 0 0 14px;
+}
+
+.cv2-footer__cols p,
+.cv2-footer__cols button {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: var(--wf-text-muted-on-dark);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.cv2-footer__contact { display: flex; align-items: center; gap: 8px; }
+
+.cv2-footer__legal {
+  border-top: 1px solid color-mix(in srgb, var(--wf-text-on-dark) 14%, transparent);
+  padding-block: 16px;
+  font-size: 0.82rem;
+}
+
+.cv2-footer__legal p { margin: 0; }
+
+/* ========================================================================== */
+/*  Movimiento reducido                                                       */
+/* ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .pf2-header,
+  .pf2-row__media img,
+  .mn2-services__table button,
+  .cv2-header__main nav button::after {
+    transition: none;
+  }
+
+  .pf2-row:hover .pf2-row__media img { transform: none; }
+  .mn2-services__table button:hover { padding-left: 4px; }
+}

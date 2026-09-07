@@ -1,0 +1,890 @@
+/**
+ * Estudio — hoja de la quinta familia canina.
+ *
+ * Reglas del sistema, y no se rompen en ninguna sección:
+ *
+ *  · Ninguna sombra. La profundidad se sugiere con filetes y superficie.
+ *  · Radios a cero. La esquina redondeada pertenece a las otras familias.
+ *  · Una sola tinta de acento; el resto es papel y tinta.
+ *  · Retícula visible: todo se alinea a filetes horizontales continuos.
+ *  · La fotografía va a sangre o recortada; nunca dentro de una tarjeta.
+ */
+
+/* ========================================================================== */
+/*  Vocabulario de movimiento propio                                          */
+/* ========================================================================== */
+/*
+ * Estudio no usa `fade-up`. Su lenguaje es la máscara: el contenido se
+ * descubre, no aparece flotando. Se declara aquí porque es identidad de
+ * familia, no del sistema global.
+ */
+
+.wf-site [data-wf-entry='mask-up'] {
+  clip-path: inset(105% 0 0 0);
+  opacity: 1;
+  transform: none;
+  transition:
+    clip-path var(--wf-motion-duration, 620ms) cubic-bezier(0.16, 1, 0.3, 1)
+      calc(var(--es-i, 0) * 70ms);
+}
+
+.wf-site [data-wf-entry='mask-up'].is-in {
+  clip-path: inset(0 0 0 0);
+}
+
+.wf-site [data-wf-entry='mask-right'] {
+  clip-path: inset(0 100% 0 0);
+  opacity: 1;
+  transform: none;
+  transition: clip-path var(--wf-motion-duration, 820ms) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wf-site [data-wf-entry='mask-right'].is-in {
+  clip-path: inset(0 0 0 0);
+}
+
+/* El filete crece desde el origen: es el gesto que marca cada enunciado. */
+.wf-site [data-wf-entry='line-grow'] {
+  opacity: 1;
+  transform: none;
+  position: relative;
+}
+
+.wf-site [data-wf-entry='line-grow']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 100%;
+  height: 1px;
+  background: currentcolor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--wf-motion-duration, 620ms) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wf-site [data-wf-entry='line-grow'].is-in::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wf-site [data-wf-entry='mask-up'],
+  .wf-site [data-wf-entry='mask-right'] {
+    clip-path: none;
+    transition: none;
+  }
+
+  .wf-site [data-wf-entry='line-grow']::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+}
+
+/* ========================================================================== */
+/*  Enunciado de sección                                                      */
+/* ========================================================================== */
+
+.es-sec-head {
+  margin-bottom: clamp(28px, 4vw, 56px);
+}
+
+.es-sec-head > span {
+  display: inline-block;
+  margin-bottom: 22px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+}
+
+.es-sec-head h2 {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.9rem, 4.4vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--wf-text-on-light);
+}
+
+.es-sec-head--inverse h2 { color: var(--wf-text-on-dark); }
+
+/* ========================================================================== */
+/*  Cabecera                                                                  */
+/* ========================================================================== */
+
+.es-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--wf-surface);
+  border-bottom: 1px solid var(--wf-border);
+  transition: border-color 240ms var(--wf-easing);
+}
+
+.es-header[data-solid='true'] { border-bottom-color: var(--wf-border-strong); }
+
+/*
+ * En móvil la navegación está oculta, y con `grid-template-columns: auto 1fr
+ * auto` la rejilla recolocaba las acciones en la columna central y estrujaba
+ * la marca hasta partirla en dos líneas. Fila simple abajo, rejilla de tres
+ * columnas solo cuando la navegación existe de verdad.
+ */
+.es-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-block: 18px;
+}
+
+@media (min-width: 940px) {
+  .es-header__inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+  }
+}
+
+/*
+ * Una regla global del sistema deja este botón en `flex`, así que en vez de
+ * pelear por el `display` se apila con `flex-direction`. Da igual quién gane
+ * la cascada: en fila o en columna, el descriptor queda debajo del nombre.
+ */
+.es-header .es-header__mark {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--wf-font-display);
+  font-size: 1.02rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--wf-text-on-light);
+}
+
+.es-header__mark { white-space: nowrap; }
+
+.es-header__descriptor {
+  font-family: var(--wf-font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-header__nav { display: none; justify-content: center; gap: clamp(18px, 2.6vw, 38px); }
+
+@media (min-width: 940px) { .es-header__nav { display: flex; } }
+
+.es-header__nav button {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--wf-text-muted-on-light);
+  transition: color 200ms var(--wf-easing);
+}
+
+.es-header__nav button i {
+  font-style: normal;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--wf-brand-primary);
+}
+
+.es-header__nav button:hover { color: var(--wf-text-on-light); }
+
+.es-header__actions { display: flex; align-items: center; gap: 14px; }
+
+/* La acción es un enlace subrayado: en un estudio el botón sólido grita. */
+.es-header__cta {
+  display: none;
+  padding: 0 0 3px;
+  /* En móvil el rótulo partía en dos líneas junto al icono de menú. */
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--wf-text-on-light);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--wf-text-on-light);
+  transition: border-color 200ms var(--wf-easing), color 200ms var(--wf-easing);
+}
+
+@media (min-width: 640px) { .es-header__cta { display: inline-block; } }
+
+.es-header__cta:hover { color: var(--wf-brand-primary); border-color: var(--wf-brand-primary); }
+
+.es-header__burger {
+  display: inline-grid;
+  place-items: center;
+  padding: 6px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--wf-text-on-light);
+}
+
+@media (min-width: 940px) { .es-header__burger { display: none; } }
+
+/* ========================================================================== */
+/*  Hero                                                                      */
+/* ========================================================================== */
+
+.es-hero { padding-block: clamp(48px, 8vw, 104px) 0; background: var(--wf-surface); }
+
+.es-hero__eyebrow {
+  display: inline-block;
+  margin-bottom: 34px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+}
+
+/* El titular es la composición: dos tercios de pantalla y nada compitiendo. */
+.es-hero__title {
+  margin: 0 0 clamp(32px, 5vw, 64px);
+  max-width: 15ch;
+  font-family: var(--wf-font-display);
+  font-size: clamp(2.7rem, 8.2vw, 6.6rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.042em;
+  color: var(--wf-text-on-light);
+}
+
+.es-hero__meta {
+  display: grid;
+  gap: 24px;
+  padding-bottom: clamp(32px, 5vw, 56px);
+}
+
+@media (min-width: 860px) {
+  .es-hero__meta { grid-template-columns: minmax(0, 46ch) auto; align-items: end; }
+}
+
+.es-hero__meta p {
+  margin: 0;
+  font-size: clamp(0.98rem, 1.3vw, 1.1rem);
+  line-height: 1.68;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-hero__actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+
+/* Corte fotográfico: banda ancha y baja, a sangre. No es un rectángulo lateral. */
+.es-hero__cut {
+  width: 100%;
+  aspect-ratio: 24 / 8;
+  overflow: hidden;
+  background: var(--wf-surface-alt);
+}
+
+@media (max-width: 700px) { .es-hero__cut { aspect-ratio: 16 / 10; } }
+
+.es-hero__cut img { width: 100%; height: 100%; object-fit: cover; }
+
+.es-hero__facts {
+  display: grid;
+  margin: 0;
+  border-bottom: 1px solid var(--wf-border);
+}
+
+@media (min-width: 780px) {
+  .es-hero__facts { grid-auto-flow: column; grid-auto-columns: 1fr; }
+  .es-hero__facts > div + div { border-left: 1px solid var(--wf-border); padding-left: clamp(16px, 2.4vw, 30px); }
+}
+
+.es-hero__facts > div {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding-block: clamp(18px, 2.4vw, 26px);
+  padding-right: clamp(16px, 2.4vw, 30px);
+  border-top: 1px solid var(--wf-border);
+}
+
+.es-hero__facts dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--wf-brand-primary);
+}
+
+.es-hero__facts dd {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--wf-text-on-light);
+}
+
+/* ========================================================================== */
+/*  Servicios — índice                                                        */
+/* ========================================================================== */
+
+.es-services { padding-block: clamp(56px, 8vw, 108px); background: var(--wf-surface); }
+
+.es-index__legend {
+  display: none;
+  padding-bottom: 12px;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-light);
+  border-bottom: 1px solid var(--wf-border-strong);
+}
+
+@media (min-width: 900px) {
+  .es-index__legend {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr) 8rem 8rem 2rem;
+    gap: clamp(14px, 2vw, 28px);
+  }
+  .es-index__legend span:nth-child(2) { grid-column: 2; }
+  .es-index__legend span:nth-child(3) { grid-column: 3; }
+  .es-index__legend span:nth-child(4) { grid-column: 4; text-align: right; }
+}
+
+.es-index__rows { margin: 0; padding: 0; list-style: none; }
+
+.es-index__rows li {
+  position: relative;
+  border-bottom: 1px solid var(--wf-border);
+}
+
+.es-index__rows button {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: clamp(12px, 2vw, 28px);
+  width: 100%;
+  padding: clamp(18px, 2.6vw, 30px) 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: padding-left 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 900px) {
+  .es-index__rows button {
+    grid-template-columns: 4rem minmax(0, 1fr) 8rem 8rem 2rem;
+    align-items: center;
+  }
+}
+
+.es-index__rows li[data-active='true'] button { padding-left: 14px; }
+
+.es-index__num {
+  font-style: normal;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--wf-brand-primary);
+}
+
+.es-index__name {
+  display: grid;
+  gap: 5px;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.15rem, 2.2vw, 1.65rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--wf-text-on-light);
+}
+
+.es-index__name em {
+  font-family: var(--wf-font-body);
+  font-size: 0.86rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-index__time {
+  display: none;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--wf-text-muted-on-light);
+}
+
+@media (min-width: 900px) { .es-index__time { display: block; } }
+
+.es-index__price {
+  justify-self: end;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--wf-text-on-light);
+}
+
+.es-index__go {
+  display: none;
+  color: var(--wf-brand-primary);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 260ms var(--wf-easing), transform 260ms var(--wf-easing);
+}
+
+@media (min-width: 900px) { .es-index__go { display: inline-flex; justify-self: end; } }
+
+.es-index__rows li[data-active='true'] .es-index__go { opacity: 1; transform: none; }
+
+/*
+ * La miniatura se asoma sobre la fila activa. Es la única fotografía de la
+ * sección y aparece solo cuando el visitante ya está mirando esa línea.
+ */
+.es-index__peek {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: clamp(9rem, 16vw, 13rem);
+  width: 190px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.94);
+  opacity: 0;
+  transition: opacity 300ms var(--wf-easing), transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+@media (min-width: 1100px) { .es-index__peek { display: block; } }
+
+.es-index__peek img { width: 100%; height: 100%; object-fit: cover; }
+
+.es-index__rows li[data-active='true'] .es-index__peek {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none) {
+  .es-index__rows button,
+  .es-index__go,
+  .es-index__peek { transition: none; }
+  .es-index__rows li[data-active='true'] button { padding-left: 0; }
+  .es-index__peek { display: none; }
+}
+
+/* ========================================================================== */
+/*  Resultados                                                                */
+/* ========================================================================== */
+
+.es-results {
+  padding-block: clamp(56px, 8vw, 108px);
+  background: var(--wf-surface-inverse);
+  color: var(--wf-text-on-dark);
+}
+
+.es-results .es-sec-head > span { color: var(--wf-brand-secondary, var(--wf-accent)); }
+
+.es-results__grid {
+  display: grid;
+  gap: clamp(24px, 3vw, 44px);
+}
+
+@media (min-width: 1000px) {
+  .es-results__grid { grid-template-columns: minmax(0, 1fr) 15rem; align-items: start; }
+}
+
+.es-results__stage { margin: 0; }
+
+/* Sin marco ni radio: la comparación llega al borde de la retícula. */
+.es-results__stage .wf-ba,
+.es-results__stage .wf-ba__frame { border-radius: 0; }
+
+/*
+ * El comparador base es cuadrado. Limitar su altura también le limitaba el
+ * ancho, y la pieza fuerte de la página quedaba en 400 px dentro de una columna
+ * de 900. Aquí manda el ancho de la retícula y la proporción se abre a formato
+ * apaisado: es lo que convierte el antes/después en el momento de la página.
+ */
+.es-results__stage .wf-ba__frame {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  max-height: none;
+}
+
+.es-results__stage .wf-ba__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 720px) {
+  .es-results__stage .wf-ba__frame { aspect-ratio: 4 / 3; }
+}
+
+.es-results__stage .wf-ba__caption { padding-top: 16px; }
+
+.es-results__stage .wf-ba__caption strong {
+  font-family: var(--wf-font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--wf-text-on-dark);
+}
+
+.es-results__stage .wf-ba__caption span {
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-dark);
+}
+
+.es-results__index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid color-mix(in srgb, var(--wf-text-on-dark) 22%, transparent);
+}
+
+.es-results__index li {
+  border-bottom: 1px solid color-mix(in srgb, var(--wf-text-on-dark) 14%, transparent);
+}
+
+.es-results__index button {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.86rem;
+  color: var(--wf-text-muted-on-dark);
+  transition: color 200ms var(--wf-easing), padding-left 260ms var(--wf-easing);
+}
+
+.es-results__index button i {
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--wf-brand-secondary, var(--wf-accent));
+}
+
+.es-results__index button:hover { color: var(--wf-text-on-dark); padding-left: 8px; }
+
+.es-results__index button[data-active='true'] {
+  color: var(--wf-text-on-dark);
+  padding-left: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .es-results__index button { transition: none; }
+}
+
+/* ========================================================================== */
+/*  Archivo                                                                   */
+/* ========================================================================== */
+
+.es-archive { padding-block: clamp(56px, 8vw, 108px); background: var(--wf-surface-alt); }
+
+.es-archive__sheet {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(10px, 1.6vw, 22px);
+}
+
+@media (min-width: 720px) { .es-archive__sheet { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1040px) { .es-archive__sheet { grid-template-columns: repeat(4, 1fr); } }
+
+.es-archive__sheet figure { margin: 0; }
+
+.es-archive__sheet img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  /* La desaturación es lo que convierte la rejilla en archivo y no en collage. */
+  filter: grayscale(0.18) contrast(1.03);
+  transition: filter 420ms var(--wf-easing);
+}
+
+.es-archive__sheet figure:hover img { filter: grayscale(0) contrast(1); }
+
+.es-archive__sheet figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding-top: 9px;
+  font-size: 0.72rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-archive__sheet figcaption i {
+  font-style: normal;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--wf-brand-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .es-archive__sheet img { transition: none; }
+}
+
+/* ========================================================================== */
+/*  Opiniones                                                                 */
+/* ========================================================================== */
+
+.es-quotes { padding-block: clamp(56px, 8vw, 108px); background: var(--wf-surface); }
+
+.es-quotes__lead { margin: 0 0 clamp(32px, 5vw, 64px); }
+
+.es-quotes__lead blockquote {
+  margin: 0;
+  max-width: 26ch;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.7rem, 4.6vw, 3.2rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--wf-text-on-light);
+}
+
+.es-quotes__lead blockquote::before { content: '«'; }
+.es-quotes__lead blockquote::after { content: '»'; }
+
+.es-quotes__lead figcaption,
+.es-quotes__rest figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 20px;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-quotes__lead figcaption i,
+.es-quotes__rest figcaption i {
+  font-style: normal;
+  color: var(--wf-brand-primary);
+}
+
+.es-quotes__rest {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--wf-border);
+}
+
+@media (min-width: 860px) {
+  .es-quotes__rest { grid-template-columns: repeat(3, 1fr); }
+  .es-quotes__rest figure + figure {
+    border-left: 1px solid var(--wf-border);
+    padding-left: clamp(18px, 2.6vw, 34px);
+  }
+}
+
+.es-quotes__rest figure {
+  margin: 0;
+  padding-block: clamp(22px, 3vw, 34px);
+  padding-right: clamp(18px, 2.6vw, 34px);
+  border-bottom: 1px solid var(--wf-border);
+}
+
+.es-quotes__rest blockquote {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--wf-text-on-light);
+}
+
+.es-quotes__score {
+  margin: clamp(24px, 3vw, 36px) 0 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-quotes__score strong {
+  font-family: var(--wf-font-display);
+  font-size: 1.05rem;
+  color: var(--wf-text-on-light);
+}
+
+/* ========================================================================== */
+/*  Reserva                                                                   */
+/* ========================================================================== */
+
+.es-booking { padding-block: clamp(56px, 8vw, 108px); background: var(--wf-surface-alt); }
+
+.es-booking__grid { display: grid; gap: clamp(32px, 5vw, 72px); }
+
+@media (min-width: 940px) {
+  .es-booking__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; }
+}
+
+.es-booking__eyebrow {
+  display: inline-block;
+  margin-bottom: 22px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+}
+
+.es-booking__aside h2 {
+  margin: 0 0 14px;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--wf-text-on-light);
+}
+
+.es-booking__aside > p {
+  margin: 0 0 32px;
+  max-width: 36ch;
+  line-height: 1.68;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-booking__aside dl { margin: 0; border-top: 1px solid var(--wf-border); }
+
+.es-booking__aside dl > div {
+  display: grid;
+  gap: 4px;
+  padding-block: 15px;
+  border-bottom: 1px solid var(--wf-border);
+}
+
+@media (min-width: 560px) {
+  .es-booking__aside dl > div { grid-template-columns: 9rem minmax(0, 1fr); gap: 18px; align-items: baseline; }
+}
+
+.es-booking__aside dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-booking__aside dd { margin: 0; font-size: 0.92rem; color: var(--wf-text-on-light); }
+
+/*
+ * Reviste el formulario real del proyecto: campos de línea inferior, etiquetas
+ * en versalitas y ningún fondo de tarjeta. No se cambia su funcionamiento.
+ */
+.es-booking__form { border-top: 1px solid var(--wf-border-strong); padding-top: clamp(20px, 3vw, 30px); }
+
+.es-booking__form label,
+.es-booking__form .wf-field > span {
+  font-size: 0.62rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-light);
+}
+
+.es-booking__form input,
+.es-booking__form select,
+.es-booking__form textarea {
+  border: 0 !important;
+  border-bottom: 1px solid var(--wf-border-strong) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding-inline: 0 !important;
+}
+
+.es-booking__form input:focus-visible,
+.es-booking__form select:focus-visible,
+.es-booking__form textarea:focus-visible {
+  outline: 0;
+  border-bottom-color: var(--wf-brand-primary) !important;
+}
+
+.es-booking__form button[type='submit'],
+.es-booking__form .wf-btn--primary {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ========================================================================== */
+/*  Pie                                                                       */
+/* ========================================================================== */
+
+.es-footer {
+  padding-block: clamp(48px, 6vw, 80px) 0;
+  background: var(--wf-surface);
+  border-top: 1px solid var(--wf-border-strong);
+  overflow: hidden;
+}
+
+.es-footer__cols {
+  display: grid;
+  gap: clamp(24px, 3vw, 40px);
+  padding-bottom: clamp(36px, 5vw, 64px);
+}
+
+@media (min-width: 720px) { .es-footer__cols { grid-template-columns: repeat(4, 1fr); } }
+
+.es-footer__cols h3 {
+  margin: 0 0 14px;
+  font-family: var(--wf-font-body);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+}
+
+.es-footer__cols p,
+.es-footer__cols button {
+  display: block;
+  margin: 0 0 7px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--wf-text-muted-on-light);
+  transition: color 180ms var(--wf-easing);
+}
+
+.es-footer__cols button:hover { color: var(--wf-text-on-light); }
+
+/* La marca a tamaño de cartel: último gesto tipográfico de la página. */
+.es-footer__mark {
+  margin: 0;
+  font-family: var(--wf-font-display);
+  font-size: clamp(3rem, 15vw, 13rem);
+  font-weight: 500;
+  line-height: 0.84;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  color: var(--wf-text-on-light);
+  opacity: 0.1;
+  user-select: none;
+}
+
+.es-footer__legal {
+  margin: 0;
+  padding-block: 18px;
+  border-top: 1px solid var(--wf-border);
+  font-size: 0.72rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .es-header,
+  .es-footer__cols button { transition: none; }
+}

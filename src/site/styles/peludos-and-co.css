@@ -1,0 +1,944 @@
+/* ==========================================================================
+   Peludos & Co. — producto digital blanco y lila.
+   Personalidad: hero partido con badge, servicios compactos, paquetes con foto
+   recortada, proceso y ventajas en filas separadas, reserva horizontal.
+   ========================================================================== */
+
+.pco-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--wf-surface);
+  border-bottom: 1px solid transparent;
+  transition: box-shadow var(--wf-duration-base) var(--wf-easing), border-color var(--wf-duration-base) var(--wf-easing);
+}
+
+.pco-header.is-stuck {
+  box-shadow: 0 1px 12px rgb(17 26 50 / 8%);
+  border-bottom-color: var(--wf-border);
+}
+
+.pco-header__inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.4rem;
+  min-height: 76px;
+}
+
+.pco-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+}
+
+.pco-brand__mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--wf-surface-muted);
+  color: var(--wf-brand-primary);
+  flex: none;
+}
+
+.pco-brand__mark--inverse {
+  background: color-mix(in srgb, var(--wf-brand-secondary) 26%, transparent);
+  color: var(--wf-brand-secondary);
+}
+
+.pco-brand__text {
+  display: grid;
+  line-height: 1.2;
+}
+
+.pco-brand__text strong {
+  font-family: var(--wf-font-display);
+  font-weight: var(--wf-display-weight);
+  font-size: 1.02rem;
+}
+
+.pco-brand__text small {
+  font-size: 0.63rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted);
+}
+
+/* Sin envoltura: primero se comprimen espacios y tipografia, y cuando ya no
+   cabe el menu completo entra la navegacion compacta. */
+.pco-nav {
+  min-width: 0;
+}
+
+.pco-nav ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(0rem, 0.5vw, 0.25rem);
+  flex-wrap: nowrap;
+}
+
+.pco-nav li {
+  flex: 0 0 auto;
+}
+
+.pco-nav button {
+  position: relative;
+  min-height: 44px;
+  padding: 0.4rem clamp(0.32rem, 0.7vw, 0.7rem);
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: clamp(0.8rem, 0.92vw, 0.9rem);
+  font-weight: 500;
+  color: var(--wf-text-muted);
+  cursor: pointer;
+}
+
+.pco-nav button:hover,
+.pco-nav button.is-active {
+  color: var(--wf-brand-primary);
+}
+
+.pco-nav button.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0.7rem;
+  right: 0.7rem;
+  bottom: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--wf-brand-primary);
+}
+
+.pco-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.pco-header__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--wf-text);
+  text-decoration: none;
+}
+
+.pco-header__phone svg {
+  color: var(--wf-brand-primary);
+}
+
+.pco-burger {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9px;
+  border: 1px solid var(--wf-border);
+  background: var(--wf-surface);
+  color: var(--wf-text);
+  cursor: pointer;
+}
+
+/* --------------------------------- Hero --------------------------------- */
+
+.pco-hero {
+  background: var(--wf-hero-background);
+  overflow: hidden;
+}
+
+.pco-hero__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 2rem;
+  min-height: min(50vh, 420px);
+  padding-block: clamp(1.2rem, 2.2vw, 2rem);
+}
+
+.pco-hero__copy {
+  display: grid;
+  gap: 1.05rem;
+  align-content: center;
+}
+
+.pco-hero__tag {
+  display: inline-flex;
+  align-items: center;
+  align-self: start;
+  padding: 0.32rem 0.75rem;
+  border-radius: 999px;
+  background: var(--wf-surface-muted);
+  color: var(--wf-brand-primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.pco-hero__grad {
+  background: var(--wf-gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fallback opaco cuando `background-clip: text` no está disponible. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .pco-hero__grad {
+    color: var(--wf-brand-primary);
+  }
+}
+
+.pco-hero__lead {
+  font-size: 1.02rem;
+  color: var(--wf-text-muted);
+  max-width: 44ch;
+}
+
+.pco-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.pco-hero__benefits {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.pco-hero__benefits li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.pco-hero__benefits span {
+  display: grid;
+  line-height: 1.22;
+}
+
+.pco-hero__benefits strong {
+  font-size: 0.78rem;
+}
+
+.pco-hero__benefits small {
+  font-size: 0.7rem;
+  color: var(--wf-text-muted);
+}
+
+.pco-hero__media {
+  position: relative;
+  align-self: stretch;
+  display: grid;
+  place-items: end center;
+  background: var(--wf-surface-muted);
+  border-start-start-radius: 46% 30%;
+  border-end-start-radius: 34% 24%;
+  min-height: min(50vh, 420px);
+  max-height: min(60vh, 480px);
+  overflow: hidden;
+}
+
+.pco-hero__decor {
+  z-index: 0;
+}
+
+.pco-hero__photo {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  height: 100%;
+  /* Sin proporcion fija: la altura la marca el hero y la foto la rellena. */
+  object-fit: cover;
+}
+
+.pco-hero__badge {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  background: var(--wf-surface);
+  box-shadow: var(--wf-shadow-float);
+}
+
+.pco-hero__badge > span {
+  display: grid;
+  line-height: 1.2;
+}
+
+.pco-hero__badge strong {
+  font-size: 1.1rem;
+}
+
+.pco-hero__badge a,
+.pco-hero__badge small {
+  font-size: 0.72rem;
+  color: var(--wf-text-muted);
+}
+
+/* ------------------------------- Servicios ------------------------------ */
+
+.pco-services__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
+.pco-service {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  padding: 1.35rem 1.05rem;
+  text-align: start;
+}
+
+.pco-service h3 {
+  font-size: 0.98rem;
+}
+
+.pco-service p {
+  font-size: 0.83rem;
+  color: var(--wf-text-muted);
+}
+
+.pco-service__price {
+  margin-top: auto;
+  padding-top: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--wf-text-muted);
+}
+
+.pco-service__price b {
+  font-size: 0.95rem;
+  color: var(--wf-brand-primary);
+}
+
+.pco-services__all {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.4rem;
+}
+
+/* -------------------------------- Paquetes ------------------------------- */
+
+.pco-packages {
+  background: var(--wf-surface-muted);
+}
+
+.pco-packages__layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 1.6rem;
+  align-items: start;
+}
+
+.pco-packages__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.pco-package {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 34%;
+  overflow: hidden;
+  background: var(--wf-surface);
+}
+
+.pco-package.is-featured {
+  border-color: var(--wf-brand-primary);
+  box-shadow: 0 0 0 1px var(--wf-brand-primary);
+}
+
+.pco-package__body {
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+  padding: 1.15rem 0.9rem;
+}
+
+.pco-package__body h3 {
+  font-size: 1rem;
+}
+
+.pco-package__body p {
+  font-size: 0.8rem;
+  color: var(--wf-text-muted);
+}
+
+.pco-package .wf-price {
+  font-size: 1.7rem;
+  color: var(--wf-brand-primary);
+}
+
+.pco-package__photo {
+  display: block;
+  background: var(--wf-surface-muted);
+}
+
+.pco-package__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pco-packages__benefits {
+  display: grid;
+  gap: 0.9rem;
+  padding-top: 0.4rem;
+}
+
+.pco-packages__benefits li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.55rem;
+  align-items: center;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.pco-packages__note {
+  margin-top: 1.2rem;
+  text-align: center;
+}
+
+/* --------------------------------- Proceso ------------------------------- */
+
+.pco-process__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.3rem;
+  position: relative;
+}
+
+.pco-process__grid::before {
+  content: '';
+  position: absolute;
+  top: 38px;
+  left: 13%;
+  right: 13%;
+  border-top: 2px dotted var(--wf-border-strong);
+}
+
+.pco-process__grid li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 0.45rem;
+}
+
+.pco-process__grid .wf-icon-badge {
+  background: var(--wf-surface);
+  outline: 8px solid var(--wf-surface);
+}
+
+.pco-process__grid h3 {
+  font-size: 0.98rem;
+}
+
+.pco-process__grid p {
+  font-size: 0.84rem;
+  color: var(--wf-text-muted);
+  max-width: 28ch;
+}
+
+/* -------------------------------- Ventajas ------------------------------- */
+
+.pco-benefits {
+  background: var(--wf-surface);
+  border-block: 1px solid var(--wf-border);
+}
+
+.pco-benefits__row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.pco-benefits__row li {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
+.pco-benefits__row strong {
+  font-size: 0.9rem;
+}
+
+.pco-benefits__row small {
+  font-size: 0.79rem;
+  color: var(--wf-text-muted);
+}
+
+/* --------------------------- Reseña + antes/después ---------------------- */
+
+.pco-proof__inner {
+  display: grid;
+  grid-template-columns: 26% 1fr;
+  gap: 1.8rem;
+  align-items: start;
+}
+
+.pco-review {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  padding: 1.3rem 1.1rem;
+  border-radius: var(--wf-radius-card);
+  background: var(--wf-surface-muted);
+}
+
+.pco-review__quote {
+  font-family: var(--wf-font-display);
+  font-size: 2.6rem;
+  line-height: 0.7;
+  color: var(--wf-brand-primary);
+}
+
+.pco-review p {
+  font-size: 0.88rem;
+  color: var(--wf-text-muted);
+}
+
+.pco-review footer {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pco-review footer span {
+  display: grid;
+  line-height: 1.25;
+}
+
+.pco-review footer strong {
+  font-size: 0.85rem;
+}
+
+.pco-review footer small {
+  font-size: 0.75rem;
+  color: var(--wf-text-muted);
+}
+
+.pco-review__avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  overflow: hidden;
+  flex: none;
+  background: var(--wf-surface);
+}
+
+.pco-proof__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 0.9rem;
+}
+
+.pco-proof__grid .wf-ba__tag {
+  background: var(--wf-surface-inverse);
+}
+
+/*
+ * Esta banda reutiliza `.wf-ba--split` para una sola foto, no un par
+ * antes/después (ver `ReviewAndTransformations` en `peludosAndCo.tsx`), así
+ * que no pasa por `.wf-ba__pair`/`.wf-ba__half`. Sin esto, `.wf-image` hereda
+ * `height: 100%` de un contenedor sin alto propio y la foto no llega a
+ * pintarse con un tamaño consistente.
+ */
+.pco-proof__grid .wf-ba--split {
+  margin: 0;
+}
+
+.pco-proof__grid .wf-ba--split .wf-image {
+  aspect-ratio: 3 / 4;
+  height: auto;
+  border-radius: var(--wf-radius-image);
+}
+
+.pco-hero__tag,
+.pco-packages .wf-eyebrow {
+  color: var(--wf-context-decorative);
+}
+
+.pco-proof__cta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+}
+
+/* ------------------------------ Reserva rápida --------------------------- */
+
+.pco-booking {
+  background: linear-gradient(180deg, var(--wf-surface), var(--wf-surface-muted));
+}
+
+.pco-booking__card {
+  display: grid;
+  grid-template-columns: 28% 1fr;
+  gap: 1.8rem;
+  padding: 1.7rem;
+  background: var(--wf-surface);
+}
+
+.pco-booking__intro {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  justify-items: start;
+}
+
+.pco-booking__icon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  background: var(--wf-brand-primary);
+  color: var(--wf-brand-primary-contrast);
+  margin-bottom: 0.3rem;
+}
+
+.pco-booking__intro h2 {
+  font-size: 1.4rem;
+}
+
+.pco-booking__intro p {
+  font-size: 0.88rem;
+  color: var(--wf-text-muted);
+}
+
+/* ---------------------------------- Footer -------------------------------- */
+
+.pco-footer {
+  background: var(--wf-surface-inverse);
+  color: var(--wf-text-inverse);
+}
+
+.pco-footer__grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.1fr 1fr;
+  gap: 1.6rem;
+  padding-block: 2.8rem 2rem;
+}
+
+.pco-footer__brand {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+}
+
+.pco-footer__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pco-footer__logo span {
+  display: grid;
+  line-height: 1.2;
+}
+
+.pco-footer__logo strong {
+  font-family: var(--wf-font-display);
+  font-size: 1.05rem;
+  color: var(--wf-text-inverse);
+}
+
+.pco-footer__logo small {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-inverse);
+}
+
+.pco-footer__brand p {
+  font-size: 0.85rem;
+  color: var(--wf-text-muted-inverse);
+  max-width: 30ch;
+}
+
+.pco-footer h3 {
+  font-size: 0.88rem;
+  color: var(--wf-text-inverse);
+  margin-bottom: 0.85rem;
+}
+
+.pco-footer ul {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.pco-footer ul button,
+.pco-footer__contact a {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 32px;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.84rem;
+  color: var(--wf-text-muted-inverse);
+  text-decoration: none;
+  text-align: start;
+  cursor: pointer;
+}
+
+.pco-footer ul button:hover,
+.pco-footer__contact a:hover {
+  color: var(--wf-brand-secondary);
+}
+
+.pco-footer__info li {
+  display: grid;
+  gap: 1px;
+}
+
+.pco-footer__info span {
+  font-size: 0.76rem;
+  color: var(--wf-text-muted-inverse);
+}
+
+.pco-footer__info strong {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--wf-text-inverse);
+}
+
+.pco-footer__area {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--wf-brand-secondary) 20%, transparent);
+  color: var(--wf-text-inverse);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.pco-footer__social {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pco-footer__social a {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--wf-text-inverse) 12%, transparent);
+  color: var(--wf-text-inverse);
+}
+
+.pco-footer__social a:hover {
+  background: var(--wf-brand-primary);
+}
+
+.pco-footer__bar {
+  border-top: 1px solid color-mix(in srgb, var(--wf-text-inverse) 14%, transparent);
+  padding-block: 0.85rem;
+}
+
+.pco-footer__bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-size: 0.78rem;
+  color: var(--wf-text-muted-inverse);
+}
+
+.pco-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.pco-footer__legal button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* -------------------------------- Responsive ------------------------------ */
+
+@media (max-width: 1260px) {
+  .pco-nav { display: none; }
+  .pco-burger { display: grid; }
+  .pco-header__inner { grid-template-columns: 1fr auto; }
+}
+
+@media (max-width: 1179px) {
+  .pco-services__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pco-packages__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .pco-packages__benefits {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pco-footer__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1023px) {
+  .pco-nav {
+    display: none;
+  }
+
+  .pco-burger {
+    display: grid;
+  }
+
+  .pco-header__inner {
+    grid-template-columns: 1fr auto;
+  }
+
+  .pco-header__phone span {
+    display: none;
+  }
+
+  .pco-hero__benefits {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pco-packages__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pco-process__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.8rem;
+  }
+
+  .pco-process__grid::before {
+    display: none;
+  }
+
+  .pco-benefits__row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pco-proof__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .pco-proof__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pco-booking__card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .pco-hero__inner {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .pco-hero__media {
+    order: 2;
+    min-height: 0;
+    border-radius: var(--wf-radius-card);
+  }
+
+  .pco-hero__badge {
+    position: static;
+    margin: 0.9rem auto 1rem;
+    width: fit-content;
+  }
+
+  .pco-hero__ctas .wf-btn {
+    width: 100%;
+  }
+
+  .pco-services__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pco-packages__list {
+    grid-template-columns: 1fr;
+  }
+
+  .pco-package {
+    grid-template-columns: 1fr 35%;
+  }
+
+  .pco-packages__benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .pco-process__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pco-benefits__row {
+    grid-template-columns: 1fr;
+  }
+
+  .pco-benefits__row li {
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    text-align: start;
+    column-gap: 0.8rem;
+  }
+
+  .pco-benefits__row strong,
+  .pco-benefits__row small {
+    grid-column: 2;
+  }
+
+  .pco-proof__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pco-footer__grid {
+    grid-template-columns: 1fr;
+  }
+}

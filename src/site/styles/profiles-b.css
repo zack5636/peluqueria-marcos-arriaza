@@ -1,0 +1,989 @@
+/**
+ * Segunda generación de las familias visuales.
+ *
+ * Tres principios sacados de comparar el generador con las templates caninas
+ * históricas:
+ *
+ *  · **La fotografía es estructura.** Sangra por el borde, invade la columna
+ *    vecina, ocupa la banda entera o se recorta en tarjeta. No vive dentro de
+ *    un rectángulo educado en medio del texto.
+ *  · **El ritmo alterna superficies.** Claro, alterno, oscuro. Una sucesión de
+ *    bloques blancos con título y tarjetas es lo que hace que una web parezca
+ *    una plantilla genérica.
+ *  · **Dos o tres momentos fuertes.** En cada familia hay secciones que mandan
+ *    —resultados y hero— y otras que acompañan.
+ */
+
+/* ========================================================================== */
+/*  PREMIUM                                                                   */
+/* ========================================================================== */
+
+.pf3-hero {
+  padding-block: 0 clamp(28px, 4vw, 48px);
+  background: var(--wf-surface);
+  overflow: hidden;
+}
+
+.pf3-hero__grid {
+  display: grid;
+  align-items: stretch;
+}
+
+@media (min-width: 900px) {
+  .pf3-hero__grid {
+    grid-template-columns: 58fr 42fr;
+    /* El panel invade la fotografía: el solape es la composición. */
+    align-items: center;
+  }
+}
+
+.pf3-hero__media {
+  position: relative;
+  min-height: clamp(320px, 52vh, 620px);
+  overflow: hidden;
+}
+
+.pf3-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pf3-hero__panel {
+  position: relative;
+  z-index: 2;
+  padding: clamp(28px, 4vw, 56px);
+  background: var(--wf-surface-inverse);
+  color: var(--wf-text-on-dark);
+}
+
+@media (min-width: 900px) {
+  .pf3-hero__panel {
+    margin-left: clamp(-120px, -8vw, -48px);
+    padding: clamp(40px, 4.5vw, 72px);
+    border-radius: var(--wf-radius-container);
+    box-shadow: var(--wf-shadow-overlay);
+  }
+}
+
+.pf3-hero__eyebrow {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+}
+
+.pf3-hero__panel h1 {
+  margin: 0 0 18px;
+  font-family: var(--wf-font-display);
+  font-size: clamp(2rem, 3.4vw, 3.1rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--wf-text-on-dark);
+}
+
+.pf3-hero__panel p {
+  margin: 0 0 26px;
+  max-width: 44ch;
+  line-height: 1.7;
+  color: var(--wf-text-muted-on-dark);
+}
+
+.pf3-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.pf3-hero__strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(16px, 3vw, 40px);
+  margin: clamp(24px, 3vw, 40px) 0 0;
+  padding: clamp(16px, 2vw, 24px) 0 0;
+  list-style: none;
+  border-top: 1px solid var(--wf-border);
+}
+
+.pf3-hero__strip li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-light);
+}
+
+.pf3-hero__strip span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--wf-brand-primary);
+}
+
+/* --- Servicios en fichas fotográficas ------------------------------------- */
+
+.pf3-services {
+  padding-block: clamp(56px, 7vw, 96px);
+  background: var(--wf-surface-alt);
+}
+
+.pf3-services__duo {
+  display: grid;
+  gap: clamp(28px, 4vw, 56px);
+}
+
+@media (min-width: 900px) {
+  .pf3-services__duo { grid-template-columns: repeat(2, 1fr); }
+  /* La segunda columna baja: la rejilla deja de leerse como una tabla. */
+  .pf3-services__duo > article:nth-child(even) { transform: translateY(clamp(24px, 4vw, 64px)); }
+}
+
+.pf3-services__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--wf-radius-image);
+  background: color-mix(in srgb, var(--wf-brand-primary) 8%, var(--wf-surface));
+  display: grid;
+  place-items: center;
+}
+
+.pf3-services__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms var(--wf-easing);
+}
+
+.pf3-services__duo article:hover .pf3-services__media img { transform: scale(1.04); }
+
+.pf3-services__media > span[aria-hidden] {
+  font-family: var(--wf-font-display);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  color: color-mix(in srgb, var(--wf-brand-primary) 35%, transparent);
+}
+
+.pf3-services__price {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 7px 14px;
+  border-radius: var(--wf-radius-pill);
+  background: var(--wf-surface-inverse);
+  color: var(--wf-text-on-dark);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.pf3-services__duo h3 {
+  margin: 20px 0 8px;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  color: var(--wf-text-on-light);
+}
+
+.pf3-services__duo p {
+  margin: 0 0 12px;
+  max-width: 46ch;
+  line-height: 1.65;
+  color: var(--wf-text-muted-on-light);
+}
+
+.pf3-services__duo ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pf3-services__duo li {
+  padding: 5px 12px;
+  border: 1px solid var(--wf-border);
+  border-radius: var(--wf-radius-pill);
+  font-size: 0.8rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+/* --- Resultados: el momento fuerte ---------------------------------------- */
+
+.pf3-results {
+  padding-block: clamp(56px, 7vw, 96px);
+  background: var(--wf-surface-inverse);
+  color: var(--wf-text-on-dark);
+}
+
+.pf3-results__head {
+  display: grid;
+  gap: 16px;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+
+@media (min-width: 900px) {
+  .pf3-results__head { grid-template-columns: 1fr 1fr; align-items: end; }
+}
+
+.pf3-results__head span {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+}
+
+.pf3-results__head h2 {
+  margin: 0;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.9rem, 3.8vw, 3rem);
+  letter-spacing: -0.025em;
+  color: var(--wf-text-on-dark);
+}
+
+.pf3-results__head p {
+  margin: 0;
+  max-width: 40ch;
+  justify-self: end;
+  color: var(--wf-text-muted-on-dark);
+}
+
+.pf3-results__lead {
+  border-radius: var(--wf-radius-image);
+  overflow: hidden;
+}
+
+.pf3-results__lead .wf-ba { border-radius: var(--wf-radius-image); overflow: hidden; }
+
+.pf3-results__lead figcaption,
+.pf3-results__rest figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  padding-top: 14px;
+}
+
+.pf3-results__lead figcaption strong,
+.pf3-results__rest figcaption strong {
+  font-family: var(--wf-font-display);
+  font-size: 1.15rem;
+  color: var(--wf-text-on-dark);
+}
+
+.pf3-results__lead figcaption span,
+.pf3-results__rest figcaption span {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-dark);
+}
+
+.pf3-results__rest {
+  display: grid;
+  gap: clamp(20px, 3vw, 36px);
+  margin-top: clamp(32px, 5vw, 56px);
+}
+
+@media (min-width: 800px) {
+  .pf3-results__rest { grid-template-columns: repeat(3, 1fr); }
+}
+
+.pf3-results__rest .wf-ba { border-radius: var(--wf-radius-image); overflow: hidden; }
+
+/* --- Reserva editorial ---------------------------------------------------- */
+
+.pf3-booking {
+  padding-block: clamp(56px, 7vw, 96px);
+  background: var(--wf-surface-alt);
+}
+
+.pf3-booking__grid {
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+}
+
+@media (min-width: 900px) {
+  .pf3-booking__grid { grid-template-columns: 5fr 7fr; align-items: start; }
+}
+
+.pf3-booking__aside span {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wf-brand-primary);
+}
+
+.pf3-booking__aside h2 {
+  margin: 0 0 12px;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  letter-spacing: -0.025em;
+  color: var(--wf-text-on-light);
+}
+
+.pf3-booking__aside > p {
+  margin: 0 0 28px;
+  max-width: 38ch;
+  line-height: 1.7;
+  color: var(--wf-text-muted-on-light);
+}
+
+.pf3-booking__aside dl { margin: 0; }
+
+.pf3-booking__aside dl > div {
+  display: grid;
+  gap: 4px;
+  padding-block: 14px;
+  border-top: 1px solid var(--wf-border);
+}
+
+@media (min-width: 640px) {
+  .pf3-booking__aside dl > div { grid-template-columns: 11ch 1fr; gap: 20px; align-items: baseline; }
+}
+
+.pf3-booking__aside dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-on-light);
+}
+
+.pf3-booking__aside dd { margin: 0; color: var(--wf-text-on-light); }
+
+.pf3-booking__form {
+  padding: clamp(24px, 3vw, 40px);
+  background: var(--wf-surface);
+  border-radius: var(--wf-radius-container);
+  box-shadow: var(--wf-shadow-card);
+}
+
+/* ========================================================================== */
+/*  MINIMALISTA                                                               */
+/* ========================================================================== */
+
+.mn3-hero { padding-block: clamp(48px, 8vw, 96px) 0; background: var(--wf-surface); }
+
+.mn3-hero__type h1 {
+  margin: 0 0 clamp(24px, 4vw, 48px);
+  font-size: clamp(2.4rem, 7vw, 5.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  max-width: 18ch;
+  color: var(--wf-text-on-light);
+}
+
+.mn3-hero__meta {
+  display: grid;
+  gap: 20px;
+  padding-bottom: clamp(28px, 4vw, 48px);
+}
+
+@media (min-width: 800px) {
+  .mn3-hero__meta { grid-template-columns: 1fr auto; align-items: end; }
+}
+
+.mn3-hero__meta p {
+  margin: 0;
+  max-width: 48ch;
+  line-height: 1.7;
+  color: var(--wf-text-muted-on-light);
+}
+
+.mn3-hero__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* La banda fotográfica cierra el hero a todo lo ancho, sin marco. */
+.mn3-hero__band {
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+}
+
+.mn3-hero__band img { width: 100%; height: 100%; object-fit: cover; }
+
+.mn3-hero__facts {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--wf-border);
+}
+
+@media (min-width: 800px) {
+  .mn3-hero__facts { grid-auto-flow: column; grid-auto-columns: 1fr; }
+  .mn3-hero__facts li + li { border-left: 1px solid var(--wf-border); padding-left: clamp(16px, 2vw, 28px); }
+}
+
+.mn3-hero__facts li {
+  padding-block: clamp(16px, 2vw, 24px);
+  padding-right: clamp(16px, 2vw, 28px);
+  font-size: 0.86rem;
+  color: var(--wf-text-muted-on-light);
+  border-top: 1px solid var(--wf-border);
+}
+
+/* --- Servicios como índice ------------------------------------------------ */
+
+.mn3-services { padding-block: clamp(56px, 8vw, 104px); background: var(--wf-surface); }
+
+.mn3-services__index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--wf-border);
+}
+
+.mn3-services__index li { border-bottom: 1px solid var(--wf-border); }
+
+.mn3-services__index button {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: clamp(14px, 2.4vw, 28px);
+  width: 100%;
+  padding: clamp(14px, 2vw, 22px) 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: padding-left 240ms var(--wf-easing);
+}
+
+@media (min-width: 800px) {
+  .mn3-services__index button { grid-template-columns: 84px 1.1fr 2fr auto; }
+}
+
+.mn3-services__index button:hover { padding-left: 10px; }
+
+.mn3-services__thumb {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--wf-surface-alt);
+  border-radius: 2px;
+}
+
+.mn3-services__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.mn3-services__name {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  font-weight: 600;
+  color: var(--wf-text-on-light);
+}
+
+.mn3-services__desc {
+  display: none;
+  font-size: 0.9rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+@media (min-width: 800px) { .mn3-services__desc { display: block; } }
+
+.mn3-services__price {
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--wf-text-on-light);
+  white-space: nowrap;
+}
+
+/* --- Resultados en rejilla estricta --------------------------------------- */
+
+.mn3-results { padding-block: clamp(56px, 8vw, 104px); background: var(--wf-surface-alt); }
+
+.mn3-results__grid {
+  display: grid;
+  gap: clamp(20px, 3vw, 40px);
+}
+
+@media (min-width: 800px) { .mn3-results__grid { grid-template-columns: repeat(2, 1fr); } }
+
+.mn3-results__grid figure { margin: 0; }
+
+.mn3-results__grid figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid var(--wf-border);
+  font-size: 0.84rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+.mn3-results__grid figcaption span:first-child {
+  font-weight: 600;
+  color: var(--wf-text-on-light);
+}
+
+/* --- Reserva de filetes --------------------------------------------------- */
+
+.mn3-booking { padding-block: clamp(56px, 8vw, 104px); background: var(--wf-surface); }
+
+.mn3-booking__grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 56px);
+}
+
+@media (min-width: 900px) { .mn3-booking__grid { grid-template-columns: 4fr 8fr; align-items: start; } }
+
+.mn3-booking__note { margin: 0 0 16px; max-width: 34ch; color: var(--wf-text-muted-on-light); }
+
+.mn3-booking__phone {
+  margin: 0;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--wf-text-on-light);
+}
+
+.mn3-booking__form { border-top: 1px solid var(--wf-border); padding-top: clamp(16px, 2vw, 24px); }
+
+/* ========================================================================== */
+/*  CONVENCIONAL                                                              */
+/* ========================================================================== */
+
+.cv3-hero { padding-block: clamp(32px, 5vw, 72px); background: var(--wf-surface); }
+
+.cv3-hero__grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+}
+
+@media (min-width: 900px) { .cv3-hero__grid { grid-template-columns: 52fr 48fr; } }
+
+.cv3-hero__eyebrow {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 6px 14px;
+  border-radius: var(--wf-radius-pill);
+  background: color-mix(in srgb, var(--wf-brand-primary) 12%, transparent);
+  color: var(--wf-brand-primary);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cv3-hero__copy h1 {
+  margin: 0 0 16px;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--wf-text-on-light);
+}
+
+.cv3-hero__copy > p { margin: 0 0 20px; max-width: 46ch; line-height: 1.7; color: var(--wf-text-muted-on-light); }
+
+.cv3-hero__benefits {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 560px) { .cv3-hero__benefits { grid-template-columns: repeat(2, 1fr); } }
+
+.cv3-hero__benefits li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  color: var(--wf-text-on-light);
+}
+
+.cv3-hero__benefits svg { color: var(--wf-success); flex: none; }
+
+.cv3-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.cv3-hero__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  /* Recorte asimétrico: la esquina rota es lo que evita el rectángulo. */
+  border-radius: clamp(24px, 6vw, 96px) var(--wf-radius-card) var(--wf-radius-card) var(--wf-radius-card);
+  box-shadow: var(--wf-shadow-float);
+}
+
+.cv3-hero__media img { width: 100%; height: 100%; object-fit: cover; }
+
+.cv3-hero__badge {
+  position: absolute;
+  right: clamp(10px, 2vw, 18px);
+  bottom: clamp(10px, 2vw, 18px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--wf-radius-card);
+  background: var(--wf-surface);
+  box-shadow: var(--wf-shadow-float);
+}
+
+.cv3-hero__badge strong { font-size: 1.4rem; color: var(--wf-text-on-light); }
+
+.cv3-hero__badge > span {
+  display: grid;
+  gap: 2px;
+  font-size: 0.76rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+/* --- Servicios compactos -------------------------------------------------- */
+
+.cv3-services { padding-block: clamp(48px, 7vw, 88px); background: var(--wf-surface-alt); }
+
+/*
+ * `auto-fit` y no un número fijo: con cinco columnas declaradas y cuatro
+ * servicios, la cuarta ficha caía sola en una segunda fila y dejaba media
+ * pantalla vacía. Así la rejilla se ajusta a lo que el negocio tenga.
+ */
+.cv3-services__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: clamp(12px, 1.8vw, 20px);
+}
+
+.cv3-services__grid article {
+  display: flex;
+  flex-direction: column;
+  background: var(--wf-surface);
+  border-radius: var(--wf-radius-card);
+  box-shadow: var(--wf-shadow-card);
+  overflow: hidden;
+  transition: transform 220ms var(--wf-easing), box-shadow 220ms var(--wf-easing);
+}
+
+.cv3-services__grid article:hover {
+  transform: translateY(calc(-1 * var(--wf-card-hover-lift, 6px)));
+  box-shadow: var(--wf-shadow-float);
+}
+
+.cv3-services__thumb {
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--wf-surface-alt);
+  color: color-mix(in srgb, var(--wf-brand-primary) 45%, transparent);
+}
+
+.cv3-services__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.cv3-services__grid h3 {
+  margin: 14px 14px 6px;
+  font-size: 0.98rem;
+  color: var(--wf-text-on-light);
+}
+
+.cv3-services__grid article > p {
+  margin: 0 14px 12px;
+  flex: 1;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--wf-text-muted-on-light);
+}
+
+.cv3-services__grid footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--wf-border);
+}
+
+.cv3-services__grid footer strong { font-size: 0.88rem; color: var(--wf-text-on-light); white-space: nowrap; }
+
+.cv3-services__grid footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--wf-brand-primary);
+}
+
+/* --- Resultados en tarjeta ------------------------------------------------ */
+
+.cv3-results { padding-block: clamp(48px, 7vw, 88px); background: var(--wf-surface); }
+
+.cv3-results__grid {
+  display: grid;
+  gap: clamp(16px, 2.4vw, 26px);
+}
+
+@media (min-width: 720px) { .cv3-results__grid { grid-template-columns: repeat(3, 1fr); } }
+
+.cv3-results__grid article {
+  overflow: hidden;
+  background: var(--wf-surface);
+  border-radius: var(--wf-radius-card);
+  box-shadow: var(--wf-shadow-card);
+}
+
+.cv3-results__grid [data-wf-card-body] {
+  display: grid;
+  gap: 3px;
+  padding: 14px 16px;
+}
+
+.cv3-results__grid [data-wf-card-body] strong { font-size: 0.98rem; color: var(--wf-text-on-light); }
+.cv3-results__grid [data-wf-card-body] span { font-size: 0.85rem; color: var(--wf-text-muted-on-light); }
+
+.cv3-results__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: clamp(24px, 3vw, 40px);
+}
+
+.cv3-results__foot button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--wf-brand-primary);
+  border-bottom: 1px solid currentcolor;
+}
+
+/* --- Reserva en tarjeta elevada ------------------------------------------- */
+
+.cv3-booking { padding-block: clamp(48px, 7vw, 88px); background: var(--wf-surface-alt); }
+
+.cv3-booking__card {
+  display: grid;
+  gap: clamp(24px, 3vw, 44px);
+  padding: clamp(22px, 3vw, 44px);
+  background: var(--wf-surface);
+  border-radius: var(--wf-radius-container);
+  box-shadow: var(--wf-shadow-float);
+}
+
+@media (min-width: 900px) { .cv3-booking__card { grid-template-columns: 4fr 8fr; align-items: start; } }
+
+.cv3-booking__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 16px;
+  border-radius: var(--wf-radius-card);
+  background: color-mix(in srgb, var(--wf-brand-primary) 14%, transparent);
+  color: var(--wf-brand-primary);
+}
+
+.cv3-booking__card aside h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  color: var(--wf-text-on-light);
+}
+
+.cv3-booking__card aside > p {
+  margin: 0 0 18px;
+  max-width: 34ch;
+  line-height: 1.65;
+  color: var(--wf-text-muted-on-light);
+}
+
+.cv3-booking__whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--wf-whatsapp);
+}
+
+.cv3-booking__phone {
+  margin: 14px 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--wf-text-on-light);
+}
+
+/* ========================================================================== */
+/*  Degradaciones                                                             */
+/* ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .pf3-services__media img,
+  .mn3-services__index button,
+  .cv3-services__grid article {
+    transition: none;
+  }
+
+  .pf3-services__duo article:hover .pf3-services__media img { transform: none; }
+  .mn3-services__index button:hover { padding-left: 0; }
+  .cv3-services__grid article:hover { transform: none; }
+}
+
+/* Sin puntero fino, el desplazamiento al pasar no aporta y molesta al tocar. */
+@media (hover: none) {
+  .mn3-services__index button:hover { padding-left: 0; }
+}
+
+/* ========================================================================== */
+/*  VENTAJAS — una por familia                                                */
+/* ========================================================================== */
+
+.pf3-benefits { padding-block: clamp(48px, 7vw, 88px); background: var(--wf-surface); }
+
+.pf3-benefits__list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--wf-border);
+}
+
+@media (min-width: 800px) { .pf3-benefits__list { grid-template-columns: repeat(2, 1fr); column-gap: clamp(32px, 5vw, 72px); } }
+
+.pf3-benefits__list li {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding-block: clamp(18px, 2.4vw, 28px);
+  border-bottom: 1px solid var(--wf-border);
+}
+
+.pf3-benefits__list span {
+  font-family: var(--wf-font-display);
+  font-size: 1.05rem;
+  color: color-mix(in srgb, var(--wf-brand-primary) 60%, transparent);
+}
+
+.pf3-benefits__list h3 {
+  margin: 0;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  font-weight: 500;
+  color: var(--wf-text-on-light);
+}
+
+.mn3-benefits { padding-block: clamp(40px, 6vw, 72px); background: var(--wf-surface); }
+
+.mn3-benefits__row {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block: 1px solid var(--wf-border);
+}
+
+@media (min-width: 800px) {
+  .mn3-benefits__row { grid-auto-flow: column; grid-auto-columns: 1fr; }
+  .mn3-benefits__row li + li { border-left: 1px solid var(--wf-border); padding-left: clamp(16px, 2.4vw, 32px); }
+}
+
+.mn3-benefits__row li {
+  padding-block: clamp(16px, 2vw, 24px);
+  padding-right: clamp(16px, 2.4vw, 32px);
+  font-size: 0.9rem;
+  color: var(--wf-text-muted-on-light);
+}
+
+.cv3-benefits {
+  padding-block: clamp(20px, 2.6vw, 32px);
+  background: var(--wf-brand-primary);
+  color: var(--wf-text-on-brand);
+}
+
+.cv3-benefits__row {
+  display: grid;
+  gap: clamp(12px, 2vw, 26px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) { .cv3-benefits__row { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .cv3-benefits__row { grid-auto-flow: column; grid-auto-columns: 1fr; } }
+
+.cv3-benefits__row li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+}
+
+.cv3-benefits__row svg { flex: none; opacity: 0.9; }
+.cv3-benefits__row strong { font-weight: 600; }
+
+/* --- Pie del antes/después dentro de cada familia ------------------------- */
+/*
+ * `BeforeAfterSplit` trae su propio pie; cada familia solo lo reviste. Añadir
+ * un segundo pie propio era lo que duplicaba el rótulo en pantalla.
+ */
+
+.pf3-results .wf-ba__caption {
+  padding-top: 14px;
+  color: var(--wf-text-on-dark);
+}
+
+.pf3-results .wf-ba__caption strong {
+  font-family: var(--wf-font-display);
+  font-size: 1.1rem;
+  color: var(--wf-text-on-dark);
+}
+
+.pf3-results .wf-ba__caption span { color: var(--wf-text-muted-on-dark); }
+
+.mn3-results .wf-ba__caption {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--wf-border);
+  font-size: 0.86rem;
+}
+
+.mn3-results .wf-ba__caption strong { font-weight: 600; color: var(--wf-text-on-light); }
+
+.cv3-results .wf-ba__caption { padding: 14px 16px 16px; }
+.cv3-results .wf-ba__caption strong { font-size: 0.98rem; color: var(--wf-text-on-light); }
+.cv3-results .wf-ba__caption span { font-size: 0.85rem; color: var(--wf-text-muted-on-light); }
+
+/* --- Servicios convencionales de primera generación ----------------------- */
+/*
+ * `cv2-services-01` declara tres columnas fijas. Con cuatro servicios —lo
+ * habitual en una peluquería— la cuarta ficha caía sola y dejaba dos huecos
+ * vacíos del ancho de la pantalla. La rejilla se ajusta ahora al número real.
+ */
+.cv2-services__grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+}
+
+/* --- Densidad de Premium -------------------------------------------------- */
+/*
+ * Las templates de referencia resuelven la portada en unos 3.500 px; Premium
+ * iba por 9.700. El aire entre secciones y una comparación principal a toda
+ * altura eran el grueso. Se recorta sin perder el carácter editorial: sigue
+ * mandando la fotografía, pero deja de leerse como una sucesión de pantallas.
+ */
+.pf3-results__lead .wf-ba__frame { max-height: clamp(340px, 46vh, 520px); }
+.pf3-results__lead .wf-ba__frame img { height: 100%; object-fit: cover; }
+
+.pf2-gallery { padding-block: clamp(56px, 7vw, 96px); }
+.pf2-gallery__mosaic figure { aspect-ratio: 3 / 2; }
+.pf2-gallery__mosaic figure[data-wide='true'] { aspect-ratio: 16 / 10; }
+
+.pf2-services { padding-block: clamp(56px, 7vw, 96px); }
+.pf2-quotes { padding-block: clamp(56px, 7vw, 96px); }
+.pf2-process { padding-block: clamp(56px, 7vw, 96px); }
+.pf2-faq { padding-block: clamp(56px, 7vw, 96px); }

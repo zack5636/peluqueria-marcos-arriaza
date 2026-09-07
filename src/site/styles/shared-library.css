@@ -1,0 +1,319 @@
+/**
+ * Biblioteca compartida: equipo y catálogo.
+ *
+ * Todo se dibuja con los tokens del tema, de modo que la misma composición
+ * cambia de carácter con la paleta y la tipografía de cada perfil visual sin
+ * tocar una regla. Nada aquí depende de un sector.
+ */
+
+/* ========================================================================== */
+/*  Equipo                                                                    */
+/* ========================================================================== */
+
+.sh-team {
+  background: var(--wf-surface);
+  color: var(--wf-text-on-light);
+}
+
+.sh-team__role {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--wf-brand-primary);
+  font-weight: 600;
+  font-size: var(--wf-label-size);
+  letter-spacing: 0.01em;
+}
+
+.sh-team__bio {
+  color: var(--wf-text-muted-on-light);
+  line-height: 1.6;
+}
+
+.sh-team__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sh-team__tags li {
+  padding: 4px 10px;
+  border: var(--wf-card-border-width) solid var(--wf-border);
+  border-radius: var(--wf-radius-pill);
+  font-size: 0.78rem;
+  color: var(--wf-text-muted-on-light);
+  background: var(--wf-surface-alt);
+}
+
+.sh-team__initials {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--wf-font-display);
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  color: var(--wf-brand-primary);
+  background: var(--wf-surface-alt);
+}
+
+/* --- Editorial ------------------------------------------------------------ */
+
+.sh-team--editorial .sh-team__editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(24px, 4vw, 48px);
+  margin-top: clamp(28px, 4vw, 48px);
+}
+
+/* La primera figura manda: se adelanta y se lee antes que el resto. */
+.sh-team--editorial .sh-team__figure:first-child .sh-team__portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.sh-team__portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--wf-radius-image);
+  background: var(--wf-surface-alt);
+}
+
+.sh-team__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--wf-duration-base) var(--wf-easing);
+}
+
+.sh-team__figure:hover .sh-team__portrait img {
+  transform: scale(var(--wf-image-hover-scale, 1.04));
+}
+
+.sh-team__index {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  font-family: var(--wf-font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
+  color: var(--wf-text-on-dark);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 55%);
+}
+
+.sh-team__body h3 {
+  margin: 14px 0 2px;
+  font-family: var(--wf-font-display);
+  font-size: var(--wf-h3-size);
+  color: var(--wf-text-on-light);
+}
+
+/* --- Rejilla -------------------------------------------------------------- */
+
+.sh-team--grid .sh-team__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1px;
+  margin: clamp(24px, 4vw, 40px) 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--wf-border);
+  border: 1px solid var(--wf-border);
+  border-radius: var(--wf-radius-container);
+  overflow: hidden;
+}
+
+.sh-team--grid .sh-team__list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--wf-surface);
+  transition: background var(--wf-duration-fast) var(--wf-easing);
+}
+
+.sh-team--grid .sh-team__list li:hover {
+  background: var(--wf-surface-alt);
+}
+
+.sh-team__avatar {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--wf-surface-alt);
+  display: grid;
+  place-items: center;
+  font-family: var(--wf-font-display);
+  color: var(--wf-brand-primary);
+}
+
+.sh-team__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sh-team__meta h3 {
+  margin: 0 0 2px;
+  font-size: 1.02rem;
+  color: var(--wf-text-on-light);
+}
+
+.sh-team__meta p {
+  margin: 0;
+  color: var(--wf-brand-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sh-team__meta small {
+  color: var(--wf-text-muted-on-light);
+  font-size: 0.8rem;
+}
+
+/* --- Tarjetas ------------------------------------------------------------- */
+
+.sh-team--cards .sh-team__cards {
+  margin-top: clamp(24px, 4vw, 40px);
+}
+
+.sh-team__cardmedia {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--wf-surface-alt);
+}
+
+.sh-team__cardmedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sh-team__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+/* ========================================================================== */
+/*  Catálogo                                                                  */
+/* ========================================================================== */
+
+.sh-catalog {
+  background: var(--wf-surface-alt);
+  color: var(--wf-text-on-light);
+}
+
+.sh-catalog__grid {
+  margin-top: clamp(24px, 4vw, 40px);
+}
+
+.sh-catalog__points {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.sh-catalog__points li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--wf-text-muted-on-light);
+  font-size: 0.9rem;
+}
+
+.sh-catalog__points svg {
+  color: var(--wf-brand-primary);
+  flex: 0 0 auto;
+}
+
+.sh-catalog--detail {
+  background: var(--wf-surface);
+}
+
+.sh-catalog__detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+@media (min-width: 900px) {
+  .sh-catalog__detail {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: start;
+  }
+}
+
+.sh-catalog__detail-media {
+  border-radius: var(--wf-radius-image);
+  overflow: hidden;
+  background: var(--wf-surface-alt);
+}
+
+.sh-catalog__detail-media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.sh-catalog__detail-body p {
+  color: var(--wf-text-muted-on-light);
+  line-height: 1.65;
+}
+
+.sh-catalog__related {
+  margin-top: clamp(28px, 4vw, 48px);
+  padding-top: 20px;
+  border-top: 1px solid var(--wf-border);
+}
+
+.sh-catalog__related h2 {
+  font-size: var(--wf-h3-size);
+  margin: 0 0 10px;
+}
+
+.sh-catalog__related ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sh-catalog__related li {
+  padding: 6px 12px;
+  border-radius: var(--wf-radius-pill);
+  background: var(--wf-surface-alt);
+  color: var(--wf-text-muted-on-light);
+  font-size: 0.86rem;
+}
+
+/* ========================================================================== */
+/*  Movimiento reducido y pantallas modestas                                  */
+/* ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-team__portrait img,
+  .sh-team--grid .sh-team__list li {
+    transition: none;
+  }
+
+  .sh-team__figure:hover .sh-team__portrait img {
+    transform: none;
+  }
+}
+
+/* En móvil el zoom de retrato no aporta y encarece el desplazamiento. */
+@media (hover: none) {
+  .sh-team__figure:hover .sh-team__portrait img {
+    transform: none;
+  }
+}

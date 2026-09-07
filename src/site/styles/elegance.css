@@ -1,0 +1,1148 @@
+/* ==========================================================================
+   Elegance — premium, nocturna y exclusiva.
+   Personalidad: header integrado en hero oscuro, servicios con retrato,
+   franja partida planes/perfil, testimonios en negro, CTA dorado final.
+   ========================================================================== */
+
+.el-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--wf-surface-inverse);
+  backdrop-filter: blur(8px);
+  transition: background-color var(--wf-duration-base) var(--wf-easing);
+}
+
+.el-header.is-stuck {
+  background: var(--wf-surface-inverse);
+  box-shadow: 0 2px 18px rgb(0 0 0 / 34%);
+}
+
+.el-header__inner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.6rem, 1.6vw, 1.6rem);
+  min-height: 80px;
+}
+
+.el-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--wf-focus-inverse);
+  font: inherit;
+  text-align: start;
+}
+
+.el-brand span {
+  display: grid;
+  line-height: 1.2;
+}
+
+.el-brand strong {
+  font-family: var(--wf-font-display);
+  font-weight: var(--wf-display-weight);
+  font-size: 1.24rem;
+  color: var(--wf-focus-inverse);
+}
+
+.el-brand small {
+  font-size: 0.6rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-inverse);
+}
+
+/* La navegacion nunca se envuelve: si falta sitio se aprietan los espacios y
+   despues se pasa al menu compacto. Un enlace suelto en una segunda linea es
+   siempre un fallo de maquetacion, no una adaptacion. */
+.el-nav {
+  min-width: 0;
+}
+
+.el-nav ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(0rem, 0.4vw, 0.2rem);
+  flex-wrap: nowrap;
+}
+
+.el-nav li {
+  flex: 0 0 auto;
+}
+
+.el-nav button {
+  position: relative;
+  min-height: 44px;
+  padding: 0.4rem clamp(0.3rem, 0.62vw, 0.62rem);
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted-inverse);
+  cursor: pointer;
+}
+
+.el-nav button:hover,
+.el-nav button.is-active {
+  color: var(--wf-focus-inverse);
+}
+
+.el-nav button.is-active::after {
+  content: '';
+  position: absolute;
+  left: clamp(0.3rem, 0.62vw, 0.62rem);
+  right: clamp(0.3rem, 0.62vw, 0.62rem);
+  bottom: 10px;
+  height: 2px;
+  background: var(--wf-focus-inverse);
+}
+
+.el-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.el-burger {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 5px;
+  border: 1px solid color-mix(in srgb, var(--wf-brand-primary) 40%, transparent);
+  background: transparent;
+  color: var(--wf-brand-primary);
+  cursor: pointer;
+}
+
+/* --------------------------------- Hero --------------------------------- */
+
+.el-hero {
+  position: relative;
+  min-height: 560px;
+  margin-top: -80px;
+  padding-top: 80px;
+  display: grid;
+  align-items: center;
+  isolation: isolate;
+  background: var(--wf-hero-background);
+}
+
+.el-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.el-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.el-hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+      95deg,
+      color-mix(in srgb, var(--wf-surface-inverse) 92%, transparent) 0%,
+      color-mix(in srgb, var(--wf-surface-inverse) 74%, transparent) 42%,
+      color-mix(in srgb, var(--wf-surface-inverse) 18%, transparent) 72%
+    ),
+    linear-gradient(0deg, color-mix(in srgb, var(--wf-surface-inverse) 70%, transparent), transparent 45%);
+}
+
+.el-hero__inner {
+  display: grid;
+  gap: 2.4rem;
+  padding-block: 3.4rem 2.4rem;
+}
+
+.el-hero__copy {
+  max-width: 46%;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.el-hero__eyebrow {
+  color: var(--wf-focus-inverse);
+}
+
+.el-hero h1 {
+  color: var(--wf-text-inverse);
+}
+
+.el-hero__lead {
+  font-size: 1.02rem;
+  color: var(--wf-text-muted-inverse);
+  max-width: 44ch;
+}
+
+.el-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.el-video-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.4rem 0.6rem;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--wf-text-inverse);
+  cursor: pointer;
+}
+
+.el-video-btn__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--wf-text-inverse) 45%, transparent);
+}
+
+.el-video-btn:hover .el-video-btn__icon {
+  border-color: var(--wf-brand-primary);
+  color: var(--wf-brand-primary);
+}
+
+.el-hero__guarantees {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid color-mix(in srgb, var(--wf-brand-primary) 26%, transparent);
+}
+
+.el-hero__guarantees li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--wf-text-inverse);
+}
+
+.el-hero__guarantees span {
+  display: grid;
+  line-height: 1.25;
+}
+
+.el-hero__guarantees strong {
+  font-size: 0.8rem;
+}
+
+.el-hero__guarantees small {
+  font-size: 0.72rem;
+  color: var(--wf-text-muted-inverse);
+}
+
+/* ------------------------------- Servicios ------------------------------ */
+
+.el-services__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.el-services__heading {
+  margin-bottom: 0;
+}
+
+.el-services__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.el-service {
+  display: grid;
+  grid-template-columns: 42% 58%;
+  align-items: stretch;
+  overflow: hidden;
+  padding: 0;
+  text-align: start;
+}
+
+.el-service__photo {
+  position: relative;
+  display: block;
+  background: var(--wf-surface-muted);
+}
+
+.el-service__photo img {
+  aspect-ratio: 4 / 5;
+  height: 100%;
+}
+
+.el-service__icon {
+  position: absolute;
+  top: 50%;
+  right: -18px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--wf-surface-inverse);
+  color: var(--wf-brand-primary);
+  z-index: 2;
+}
+
+.el-service__body {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  padding: 1.1rem 1rem 1.1rem 1.4rem;
+}
+
+.el-service__body strong {
+  font-family: var(--wf-font-display);
+  font-size: 1.02rem;
+}
+
+.el-service__desc {
+  font-size: 0.82rem;
+  color: var(--wf-text-muted);
+}
+
+.el-service__price {
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wf-text-muted);
+}
+
+.el-service__price b {
+  font-size: 0.98rem;
+  letter-spacing: 0;
+  color: var(--wf-decorative-text);
+}
+
+/* --------------------------- Planes / perfil ---------------------------- */
+
+.el-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.el-split__inner {
+  max-width: calc(var(--wf-content-max) / 2);
+  width: 100%;
+  padding: var(--wf-section-spacing) var(--wf-gutter);
+  margin-inline-start: auto;
+}
+
+.el-split > *:last-child .el-split__inner {
+  margin-inline: 0 auto;
+}
+
+.el-plans {
+  background: var(--wf-surface-inverse);
+  color: var(--wf-text-inverse);
+  background-image: radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--wf-brand-primary) 12%, transparent), transparent 55%);
+}
+
+.el-plans h2,
+.el-plans .wf-heading__title {
+  color: var(--wf-text-inverse);
+}
+
+.el-plans .wf-heading__subtitle {
+  color: var(--wf-text-muted-inverse);
+}
+
+.el-plans__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.el-plan {
+  position: relative;
+  display: grid;
+  gap: 0.7rem;
+  align-content: start;
+  padding: 1.4rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--wf-brand-primary) 30%, transparent);
+  border-radius: var(--wf-radius-card);
+  background: var(--wf-surface-inverse-soft);
+  overflow: hidden;
+}
+
+.el-plan.is-featured {
+  border-color: var(--wf-brand-primary);
+  box-shadow: 0 0 0 1px var(--wf-brand-primary);
+}
+
+.el-plan h3 {
+  font-size: 1.15rem;
+  color: var(--wf-text-on-dark);
+  text-align: center;
+}
+
+.el-plan ul {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--wf-text-muted-inverse);
+  text-align: center;
+}
+
+.el-plan__price {
+  font-family: var(--wf-font-display);
+  font-size: 1.5rem;
+  font-weight: var(--wf-display-weight);
+  color: var(--wf-text-on-dark);
+  text-align: center;
+}
+
+.el-plan .wf-btn--ghost {
+  border-color: color-mix(in srgb, var(--wf-text-on-dark) 58%, transparent);
+  color: var(--wf-text-on-dark);
+}
+
+.el-profile {
+  background: var(--wf-surface-alt);
+}
+
+.el-profile__inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.8rem;
+  align-items: center;
+}
+
+.el-profile__copy {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: start;
+}
+
+.el-phone {
+  width: 250px;
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  border-radius: var(--wf-radius-container);
+  border: 8px solid var(--wf-surface-inverse);
+  background: var(--wf-surface);
+  box-shadow: var(--wf-shadow-float);
+  font-size: 0.78rem;
+}
+
+.el-phone__status {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.66rem;
+  color: var(--wf-text-muted);
+}
+
+.el-phone__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.el-phone__head span {
+  display: grid;
+  line-height: 1.25;
+}
+
+.el-phone__head strong {
+  font-size: 0.9rem;
+}
+
+.el-phone__head small {
+  font-size: 0.68rem;
+  color: var(--wf-text-muted);
+}
+
+.el-phone__avatar {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: var(--wf-surface-muted);
+  color: var(--wf-brand-primary);
+  flex: none;
+}
+
+.el-phone__card,
+.el-phone__list {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: var(--wf-radius-card);
+  background: var(--wf-surface-alt);
+  border: 1px solid var(--wf-border);
+}
+
+.el-phone__label {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wf-decorative-text);
+}
+
+.el-phone__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-block: 0.25rem;
+  border-top: 1px solid var(--wf-border);
+  font-size: 0.72rem;
+}
+
+.el-phone__row small {
+  color: var(--wf-text-muted);
+}
+
+.el-phone__cta {
+  display: grid;
+  place-items: center;
+  min-height: 36px;
+  border-radius: 8px;
+  background: var(--wf-brand-primary);
+  color: var(--wf-brand-primary-contrast);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------- Proceso ------------------------------ */
+
+.el-process__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+/* Cada paso es una columna con su propia cabecera (numero + icono) sobre el
+   texto. Antes habia tres hijos en una rejilla de dos columnas con el numero
+   anclado a la fila 1, asi que el texto caia bajo el numero y no bajo el icono,
+   y el conector aparecia pegado al paso equivocado. */
+.el-process__grid li {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  gap: 0.7rem;
+  /* Reserva para el conector, que vive en el espacio entre columnas. */
+  padding-right: 0.4rem;
+}
+
+.el-process__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 52px;
+}
+
+.el-process__num {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  flex: none;
+  font-family: var(--wf-font-display);
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--wf-decorative-text);
+}
+
+.el-process__grid h3 {
+  font-size: 0.98rem;
+  margin-bottom: 0.25rem;
+}
+
+.el-process__grid p {
+  font-size: 0.84rem;
+  color: var(--wf-text-muted);
+}
+
+/* El conector se alinea con el centro de la cabecera del paso, no con su texto. */
+.el-process__arrow {
+  position: absolute;
+  top: 26px;
+  right: -0.75rem;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  color: var(--wf-brand-primary);
+  opacity: 0.7;
+}
+
+.el-process__note {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: center;
+  margin-top: 1.6rem;
+}
+
+/* ------------------------------- Testimonios ---------------------------- */
+
+.el-testimonial {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.4rem 1.2rem;
+  border-radius: var(--wf-radius-card);
+  background: var(--wf-surface-inverse-soft);
+  border: 1px solid color-mix(in srgb, var(--wf-brand-primary) 24%, transparent);
+  height: 100%;
+}
+
+.el-testimonial__avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--wf-surface-inverse);
+}
+
+.el-testimonial p {
+  font-size: 0.9rem;
+  color: var(--wf-text-muted-inverse);
+  font-style: italic;
+}
+
+.el-testimonial footer {
+  font-size: 0.8rem;
+  color: var(--wf-text-muted-on-dark);
+  font-weight: 600;
+}
+
+.el-testimonials__carousel .wf-carousel__arrow {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--wf-brand-primary) 45%, transparent);
+  color: var(--wf-brand-primary);
+}
+
+/* --------------------------------- Galería ------------------------------- */
+
+.el-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.el-gallery__item {
+  padding: 0;
+  border: 0;
+  background: var(--wf-surface-muted);
+  border-radius: var(--wf-radius-image);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  cursor: pointer;
+}
+
+.el-gallery__item img {
+  transition: transform 350ms var(--wf-easing);
+}
+
+.el-gallery__item:hover img {
+  transform: scale(1.025);
+}
+
+.el-gallery__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.6rem;
+}
+
+/* -------------------------------- CTA final ------------------------------ */
+
+.el-final {
+  position: relative;
+  background: var(--wf-brand-primary);
+  background-image: var(--wf-button-gradient);
+  overflow: hidden;
+}
+
+/* Zonas seguras: la imagen decorativa tiene su propia columna reservada, de
+   modo que nunca puede cruzarse por encima del texto ni del boton. */
+.el-final__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto var(--el-final-dog, 210px);
+  align-items: center;
+  gap: clamp(0.9rem, 1.8vw, 1.6rem);
+  min-height: 132px;
+  padding-block: 1.4rem;
+}
+
+.el-final__paw {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  border: 2px solid var(--wf-brand-primary-contrast);
+  color: var(--wf-brand-primary-contrast);
+  flex: none;
+}
+
+.el-final__inner > .wf-btn {
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.el-final__copy {
+  min-width: 0;
+  color: var(--wf-brand-primary-contrast);
+}
+
+.el-final__copy p {
+  max-width: 52ch;
+}
+
+.el-final__copy h2 {
+  color: var(--wf-brand-primary-contrast);
+  font-size: 1.7rem;
+}
+
+.el-final__copy p {
+  font-size: 0.92rem;
+  opacity: 0.9;
+}
+
+/* La imagen ocupa su columna: sigue sangrando al borde derecho de la seccion,
+   pero sin invadir el area del boton. */
+.el-final__dog {
+  position: relative;
+  align-self: stretch;
+  width: var(--el-final-dog, 210px);
+  min-height: 132px;
+  margin-right: calc(clamp(18px, 3.6vw, 56px) * -1);
+  overflow: hidden;
+}
+
+.el-final__dog img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* ---------------------------------- Footer ------------------------------- */
+
+.el-footer {
+  background: var(--wf-surface-inverse-soft);
+  color: var(--wf-text-inverse);
+}
+
+.el-footer__grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.8fr 0.9fr 1.1fr 1.2fr;
+  gap: 1.6rem;
+  padding-block: 3rem 2.2rem;
+}
+
+.el-footer__brand {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+}
+
+.el-footer__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--wf-focus-inverse);
+}
+
+.el-footer__logo strong {
+  font-family: var(--wf-font-display);
+  font-size: 1.2rem;
+}
+
+.el-footer__brand p {
+  font-size: 0.85rem;
+  color: var(--wf-text-muted-inverse);
+  max-width: 30ch;
+}
+
+.el-footer h3 {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wf-text-on-dark);
+  margin-bottom: 0.9rem;
+}
+
+.el-footer ul {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.el-footer ul button,
+.el-footer__contact a,
+.el-footer__contact span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 32px;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.84rem;
+  color: var(--wf-text-muted-inverse);
+  text-decoration: none;
+  text-align: start;
+  cursor: pointer;
+}
+
+.el-footer__contact span {
+  cursor: default;
+}
+
+.el-footer ul button:hover,
+.el-footer__contact a:hover {
+  color: var(--wf-brand-primary);
+}
+
+.el-footer__social {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.el-footer__social a {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--wf-brand-primary) 40%, transparent);
+  color: var(--wf-brand-primary);
+}
+
+.el-newsletter p {
+  font-size: 0.84rem;
+  color: var(--wf-text-muted-inverse);
+  margin-bottom: 0.8rem;
+}
+
+.el-newsletter__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.el-newsletter .wf-input {
+  background: var(--wf-surface-inverse);
+  border-color: color-mix(in srgb, var(--wf-brand-primary) 34%, transparent);
+  color: var(--wf-text-inverse);
+}
+
+.el-newsletter .wf-consent {
+  color: var(--wf-text-muted-inverse);
+  font-size: 0.78rem;
+}
+
+.el-newsletter__status {
+  min-height: 1.2rem;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.el-newsletter__status.is-ok {
+  color: var(--wf-success);
+}
+
+.el-newsletter__status.is-error {
+  color: var(--wf-danger);
+}
+
+.el-footer__bar {
+  border-top: 1px solid color-mix(in srgb, var(--wf-brand-primary) 22%, transparent);
+  padding-block: 0.9rem;
+}
+
+.el-footer__bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-size: 0.78rem;
+  color: var(--wf-text-muted-inverse);
+}
+
+.el-footer__legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.el-footer__legal button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.el-wa-float {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--wf-whatsapp);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 30%);
+}
+
+.el-video video,
+.el-video__poster img {
+  width: 100%;
+  border-radius: var(--wf-radius-image);
+  display: block;
+}
+
+.el-video__poster p {
+  margin-top: 0.9rem;
+  font-size: 0.88rem;
+  color: var(--wf-text-muted);
+}
+
+.el-video__transcript {
+  margin-top: 1rem;
+  font-size: 0.86rem;
+  color: var(--wf-text-muted);
+}
+
+.el-video__transcript summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--wf-text);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+/* -------------------------------- Responsive ----------------------------- */
+
+@media (max-width: 1179px) {
+  .el-gallery__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .el-footer__grid {
+    grid-template-columns: 1.2fr 1fr 1fr;
+  }
+
+  .el-newsletter {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1023px) {
+  .el-nav {
+    display: none;
+  }
+
+  .el-burger {
+    display: grid;
+  }
+
+  .el-header__inner {
+    grid-template-columns: 1fr auto;
+  }
+
+  .el-hero__copy {
+    max-width: 66%;
+  }
+
+  .el-hero__guarantees {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .el-services__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .el-split {
+    grid-template-columns: 1fr;
+  }
+
+  .el-split__inner {
+    max-width: var(--wf-content-max);
+    margin-inline: auto;
+  }
+
+  .el-process__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.6rem;
+  }
+
+  /* Con dos columnas el conector solo sobra al final de cada fila. */
+  .el-process__grid li:nth-child(2n) .el-process__arrow {
+    display: none;
+  }
+
+  .el-final__inner {
+    --el-final-dog: 150px;
+  }
+
+  .el-footer__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .el-hero {
+    min-height: 0;
+  }
+
+  .el-hero__media {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 4 / 5;
+    max-height: 58vh;
+    margin-top: -80px;
+  }
+
+  .el-hero__veil {
+    inset: 0 0 auto;
+    height: 58vh;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--wf-surface-inverse) 74%, transparent) 0 30%, color-mix(in srgb, var(--wf-surface-inverse) 30%, transparent));
+  }
+
+  .el-hero__inner {
+    background: var(--wf-surface-inverse);
+    padding-block: 2rem;
+  }
+
+  .el-hero__copy {
+    max-width: 100%;
+  }
+
+  .el-hero__ctas .wf-btn {
+    width: 100%;
+  }
+
+  .el-hero__guarantees {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .el-services__head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .el-services__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .el-plans__grid {
+    grid-auto-flow: column;
+    grid-auto-columns: 74%;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .el-plans__grid > * {
+    scroll-snap-align: start;
+  }
+
+  .el-profile__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .el-phone {
+    width: min(280px, 100%);
+    margin-inline: auto;
+  }
+
+  .el-process__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .el-gallery__grid {
+    grid-auto-flow: column;
+    grid-auto-columns: 78%;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .el-gallery__item {
+    scroll-snap-align: start;
+  }
+
+  .el-final__inner {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+    text-align: start;
+    row-gap: 1rem;
+  }
+
+  .el-final__inner > .wf-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* En movil la imagen no se elimina: se convierte en una franja de 96 px que
+     cierra la seccion sin robar espacio al boton. */
+  .el-final__dog {
+    width: calc(100% + clamp(18px, 3.6vw, 56px) * 2);
+    min-height: 96px;
+    max-height: 96px;
+    margin-inline: calc(clamp(18px, 3.6vw, 56px) * -1);
+  }
+
+  .el-process__arrow {
+    display: none;
+  }
+
+  .el-footer__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .el-wa-float {
+    bottom: 14px;
+    right: 14px;
+    width: 52px;
+    height: 52px;
+  }
+}
