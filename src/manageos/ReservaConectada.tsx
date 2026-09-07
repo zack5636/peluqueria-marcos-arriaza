@@ -1,5 +1,5 @@
 import { useManageOS } from './useManageOS';
-import { ReservaManageOS } from './ReservaManageOS';
+import { ReservaManageOS, type PaqueteInicial } from './ReservaManageOS';
 import { AgendaNoDisponible } from './AgendaNoDisponible';
 import './reserva.css';
 
@@ -16,10 +16,12 @@ import './reserva.css';
  * global, la página de reserva y la sección de la portada. Esa es la garantía
  * de que no hay dos flujos conviviendo por accidente.
  */
-export function ReservaConectada({ whatsapp, servicioInicial }: {
+export function ReservaConectada({ whatsapp, servicioInicial, paqueteInicial }: {
   whatsapp?: string | null;
   /** Servicio preseleccionado al llegar desde una tarjeta del catálogo. */
   servicioInicial?: string | null;
+  /** Paquete preseleccionado al llegar desde la sección de paquetes. */
+  paqueteInicial?: PaqueteInicial | null;
 }) {
   const conexion = useManageOS();
 
@@ -40,6 +42,7 @@ export function ReservaConectada({ whatsapp, servicioInicial }: {
         estado={conexion.datos}
         whatsapp={whatsapp ?? conexion.datos.business.contactPhone}
         servicioInicial={servicioInicial ?? null}
+        paqueteInicial={paqueteInicial ?? null}
       />
     );
   }

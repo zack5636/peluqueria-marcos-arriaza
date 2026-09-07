@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useSite } from '../context';
+import { useSite, resolverPreseleccion } from '../context';
 import { useActiveSection, useStickyHeader } from '../hooks';
 import type { SectionComponent } from '../registry';
 import { ReservaConectada } from '../../manageos/ReservaConectada';
@@ -171,7 +171,7 @@ const Hero: SectionComponent = ({ section }) => {
  * ======================================================================== */
 
 const Services: SectionComponent = ({ section }) => {
-  const { config, formatPrice, runCta } = useSite();
+  const { config, formatPrice, runCta, selectBooking } = useSite();
   /* Manda Manager cuando la web está conectada; si no, el catálogo de la plantilla. */
   const { servicios: services } = useCatalogo(config.services);
   const heading = config.content.headings.services;
@@ -219,6 +219,7 @@ const Services: SectionComponent = ({ section }) => {
               type="button"
               className="wf-btn wf-btn--primary wf-btn--md"
               onClick={() => {
+                if (detail) selectBooking({ serviceId: detail.id, label: detail.name });
                 setDetail(null);
                 runCta({ label: 'Reservar', kind: 'anchor', target: '#reserva' });
               }}
@@ -243,8 +244,8 @@ const Packages: SectionComponent = ({ section }) => {
   const packages = config.packages.filter((p) => p.enabled);
   const heading = config.content.headings.packages;
 
-  const choose = (name: string) => {
-    selectBooking({ label: `Paquete ${name}` });
+  const choose = (id: string, name: string) => {
+    selectBooking({ packageId: id, label: `Paquete ${name}` });
     announce(`Paquete ${name} seleccionado en el formulario de reserva.`);
     runCta({ label: 'Reservar', kind: 'anchor', target: '#reserva' });
   };
@@ -262,7 +263,7 @@ const Packages: SectionComponent = ({ section }) => {
                   <h3>{pack.name}</h3>
                   <p>{pack.includes.join(' + ')}</p>
                   <p className="wf-price">{formatPrice(pack.priceEur)}</p>
-                  <button type="button" className="wf-btn wf-btn--primary wf-btn--sm" onClick={() => choose(pack.name)}>
+                  <button type="button" className="wf-btn wf-btn--primary wf-btn--sm" onClick={() => choose(pack.id, pack.name)}>
                     Elegir paquete
                   </button>
                 </div>
@@ -415,8 +416,9 @@ const ReviewAndTransformations: SectionComponent = ({ section }) => {
  * ======================================================================== */
 
 const QuickBooking: SectionComponent = ({ section }) => {
-  const { config, runCta } = useSite();
+  const { config, bookingSelection } = useSite();
   const heading = config.content.headings.booking;
+  const preseleccion = resolverPreseleccion(config, bookingSelection);
 
   return (
     <SectionShell anchor={section.anchor} className="wf-section pco-booking">
@@ -430,7 +432,11 @@ const QuickBooking: SectionComponent = ({ section }) => {
             <p>{heading?.subtitle}</p>
           </div>
           <div className="pco-booking__form">
-            <ReservaConectada whatsapp={config.business.whatsapp} />
+            <ReservaConectada
+              whatsapp={config.business.whatsapp}
+              servicioInicial={preseleccion.servicioId}
+              paqueteInicial={preseleccion.paquete}
+            />
           </div>
         </div>
       </Container>

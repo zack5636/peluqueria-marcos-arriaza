@@ -20,11 +20,46 @@ import { Icon } from '../site/components/Icon';
  * una peluquería canina y para cualquier otra cosa sin tocar el código.
  */
 
+/**
+ * Paquete elegido antes de entrar aquí. `nombresServicios` son los nombres
+ * reales del catálogo que lo componen (`PackageItem.includedServiceNames`);
+ * de ahí sale el servicio de verdad que se reserva y, con él, la duración.
+ */
+export interface PaqueteInicial {
+  nombre: string;
+  nombresServicios: string[];
+}
+
 interface Props {
   estado: EstadoDelNegocio;
   whatsapp?: string | null;
   /** Servicio preseleccionado al llegar desde una tarjeta del catálogo. */
   servicioInicial?: string | null;
+  /** Paquete preseleccionado al llegar desde la sección de paquetes. */
+  paqueteInicial?: PaqueteInicial | null;
+}
+
+function normalizarNombre(texto: string): string {
+  return texto.trim().toLowerCase();
+}
+
+/**
+ * Manager no sabe de paquetes, solo de servicios: reservar uno de verdad
+ * significa reservar el servicio real que mejor lo representa. Se elige el de
+ * mayor duración entre los que lo componen —el margen que pide el propio
+ * paquete— en vez de inventar una duración combinada que Manager no podría
+ * validar contra la agenda real.
+ */
+function servicioParaPaquete(
+  paquete: PaqueteInicial,
+  servicios: ServicioPublico[],
+): ServicioPublico | null {
+  const nombres = new Set(paquete.nombresServicios.map(normalizarNombre));
+  const candidatos = servicios.filter((entrada) => nombres.has(normalizarNombre(entrada.name)));
+  if (candidatos.length === 0) return null;
+  return candidatos.reduce((mas_largo, entrada) => (
+    entrada.durationMinutes > mas_largo.durationMinutes ? entrada : mas_largo
+  ));
 }
 
 type Paso = 'servicio' | 'dia' | 'hora' | 'datos' | 'hecho';
@@ -79,9 +114,37 @@ function nivelDelDia(dia: DiaDePanorama): NivelDelDia {
   return libres / dia.slots.length > 0.3 ? 'libre' : 'ocupado';
 }
 
-export function ReservaManageOS({ estado, whatsapp, servicioInicial }: Props) {
-  const [paso, setPaso] = useState<Paso>('servicio');
-  const [servicioId, setServicioId] = useState<string>(servicioInicial ?? '');
+export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInicial }: Props) {
+  /*
+   * Quién llega ya elegido. Un paquete se resuelve al servicio real que mejor
+   * lo representa (ver `servicioParaPaquete`); si no hay preselección válida,
+   * o el paquete no encaja con ningún servicio real, se empieza igual que
+   * siempre por elegir servicio, en vez de fingir una elección que no hay.
+   */
+  const resueltoAlInicio = useMemo(() => {
+    if (servicioInicial && estado.services.some((entrada) => entrada.id === servicioInicial)) {
+      return { servicioId: servicioInicial, notaPaquete: null as string | null };
+    }
+    if (paqueteInicial) {
+      const encontrado = servicioParaPaquete(paqueteInicial, estado.services);
+      if (encontrado) {
+        const resto = paqueteInicial.nombresServicios.filter(
+          (nombre) => normalizarNombre(nombre) !== normalizarNombre(encontrado.name),
+        );
+        const nota = resto.length > 0
+          ? `${paqueteInicial.nombre} (incluye también: ${resto.join(', ')})`
+          : paqueteInicial.nombre;
+        return { servicioId: encontrado.id, notaPaquete: nota };
+      }
+    }
+    return { servicioId: '', notaPaquete: null as string | null };
+    // Solo se resuelve al montar: cambiar de paso más tarde no debe reiniciar la elección.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [paso, setPaso] = useState<Paso>(resueltoAlInicio.servicioId ? 'dia' : 'servicio');
+  const [servicioId, setServicioId] = useState<string>(resueltoAlInicio.servicioId);
+  const [notaPaquete] = useState<string | null>(resueltoAlInicio.notaPaquete);
   const [mes, setMes] = useState(() => { const hoy = new Date(); return new Date(hoy.getFullYear(), hoy.getMonth(), 1); });
   const [dias, setDias] = useState<DiaDePanorama[]>([]);
   const [cargandoAgenda, setCargandoAgenda] = useState(false);
@@ -207,6 +270,23 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial }: Props) {
         else if (campo.target === 'customer.phone') cliente.phone = valor;
         else detalles.push({ key: campo.key, label: campo.label, value: valor });
       }
+      /*
+       * El servidor solo acepta claves de detalle que el propio negocio haya
+       * declarado (`booking.fields`): no se puede colar una "paquete_elegido"
+       * que Manager no conoce. Se antepone al primer campo de texto libre en
+       * su lugar, que es donde un mensaje así ya tiene sitio.
+       */
+      if (notaPaquete) {
+        const libre = detalles.find((detalle) => campos.find(
+          (campo) => campo.key === detalle.key && campo.type === 'long_text',
+        ));
+        const prefijo = `[${notaPaquete}] `;
+        if (libre) libre.value = `${prefijo}${libre.value}`;
+        else {
+          const campoLibre = campos.find((campo) => campo.type === 'long_text');
+          if (campoLibre) detalles.push({ key: campoLibre.key, label: campoLibre.label, value: prefijo.trim() });
+        }
+      }
       const respuesta = await crearReserva(
         { serviceId: servicio.id, startsAt: inicio, customer: cliente, details: detalles },
         crypto.randomUUID(),
@@ -262,6 +342,13 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial }: Props) {
       </ol>
 
       {aviso ? <p className="pco-reserva__aviso" role="status">{aviso}</p> : null}
+
+      {notaPaquete && paso !== 'servicio' ? (
+        <p className="pco-reserva__paquete" role="status">
+          Reservando <strong>{notaPaquete}</strong>{servicio ? <> como «{servicio.name}»</> : null}. Si prefieres otro
+          servicio, <button type="button" className="pco-reserva__paquete-cambiar" onClick={() => setPaso('servicio')}>elígelo aquí</button>.
+        </p>
+      ) : null}
 
       {paso === 'servicio' ? (
         <div className="pco-reserva__servicios">

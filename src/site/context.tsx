@@ -89,6 +89,30 @@ export function buildWhatsappUrl(phone: string, message: string): string {
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * Traduce lo que se eligió (`selectBooking`) a lo que la reserva canina
+ * entiende: un `serviceId` de verdad, o un paquete con los nombres reales que
+ * lo componen. Vive aquí y no en cada sitio donde se monta `ReservaConectada`
+ * porque los dos puntos donde se monta —el modal global y la banda de
+ * reserva rápida de la portada— tienen que resolver la misma elección igual.
+ */
+export function resolverPreseleccion(
+  config: SiteConfig,
+  seleccion: BookingSelection,
+): { servicioId: string | null; paquete: { nombre: string; nombresServicios: string[] } | null } {
+  if (seleccion.serviceId) return { servicioId: seleccion.serviceId, paquete: null };
+  if (seleccion.packageId) {
+    const pack = config.packages.find((item) => item.id === seleccion.packageId);
+    if (pack) {
+      return {
+        servicioId: null,
+        paquete: { nombre: pack.name, nombresServicios: pack.includedServiceNames },
+      };
+    }
+  }
+  return { servicioId: null, paquete: null };
+}
+
 export function SiteRuntimeProvider({
   config,
   options,

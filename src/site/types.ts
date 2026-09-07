@@ -172,7 +172,17 @@ export interface PackageItem {
   name: string;
   priceEur: number;
   priceNote: string;
+  /** Línea de venta, libre: "Baño + Corte + Higiene". No enlaza con nada. */
   includes: string[];
+  /**
+   * Nombres reales del catálogo que forman el paquete, para que la reserva
+   * pueda enlazarlo a un servicio de verdad de Manager. Se comparan
+   * normalizados, igual que en `useCatalogo`, así que basta con escribir el
+   * nombre tal cual está en Manager (o en `services` de esta plantilla).
+   * Vacío o sin coincidencias: el paquete sigue reservable a mano, sin
+   * preselección.
+   */
+  includedServiceNames: string[];
   highlighted: boolean;
   highlightLabel: string;
   accent: string;

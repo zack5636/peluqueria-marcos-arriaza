@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { SiteRuntimeProvider, useSite, type SiteRuntimeOptions } from './context';
+import { SiteRuntimeProvider, useSite, resolverPreseleccion, type SiteRuntimeOptions } from './context';
 import { usePrefersReducedMotion } from './hooks';
 import { getVariant, SECTION_COMPONENTS } from './variants';
 import { headerPatternForVariant } from './registry';
@@ -46,7 +46,8 @@ import './styles/carpinteria-taller.css';
  * reservaba rellenaba primero el que no llegaba a ningún sitio.
  */
 function BookingModal() {
-  const { openModal, setOpenModal, config } = useSite();
+  const { openModal, setOpenModal, config, bookingSelection } = useSite();
+  const preseleccion = resolverPreseleccion(config, bookingSelection);
   return (
     <Modal
       open={openModal === 'booking'}
@@ -54,7 +55,11 @@ function BookingModal() {
       title="Reservar cita"
       size="md"
     >
-      <ReservaConectada whatsapp={config.business.whatsapp} />
+      <ReservaConectada
+        whatsapp={config.business.whatsapp}
+        servicioInicial={preseleccion.servicioId}
+        paqueteInicial={preseleccion.paquete}
+      />
     </Modal>
   );
 }
