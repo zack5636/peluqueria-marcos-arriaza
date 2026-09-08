@@ -205,13 +205,25 @@ export function crearReserva(datos: DatosDeReserva, idempotencia: string): Promi
   });
 }
 
+/**
+ * El exponente real de una moneda.
+ *
+ * Casi todas usan 2 decimales (cien céntimos), pero el peso chileno y el
+ * guaraní paraguayo no tienen fracción: cobran en unidades enteras. Dividir
+ * entre 100 ahí convertiría un precio de 1.000 en 10,00 — el mismo motivo por
+ * el que Manager guarda el precio como entero y no como número con coma.
+ */
+function exponenteDeMoneda(currency: string): number {
+  return currency === 'CLP' || currency === 'PYG' ? 0 : 2;
+}
+
 /** Precio tal como se enseña, respetando lo que el negocio decidió en Manager. */
 export function precioLegible(servicio: ServicioPublico, locale = 'es-ES'): string | null {
   if (servicio.priceMode === 'on_request' || servicio.priceMinor === null) return null;
+  const moneda = servicio.currency ?? 'EUR';
   const importe = new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: servicio.currency ?? 'EUR',
-    maximumFractionDigits: servicio.priceMinor % 100 === 0 ? 0 : 2,
-  }).format(servicio.priceMinor / 100);
+    currency: moneda,
+  }).format(servicio.priceMinor / 10 ** exponenteDeMoneda(moneda));
   return servicio.priceMode === 'from' ? `Desde ${importe}` : importe;
 }
