@@ -252,6 +252,5 @@ export function precioLegibleTamano(tamano: TamanoDeServicio, locale = 'es-ES'):
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: tamano.currency,
-    maximumFractionDigits: tamano.priceMinor % 100 === 0 ? 0 : 2,
-  }).format(tamano.priceMinor / 100);
+  }).format(tamano.priceMinor / 10 ** exponenteDeMoneda(tamano.currency));
 }
