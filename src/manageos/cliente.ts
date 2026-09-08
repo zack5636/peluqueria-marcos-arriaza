@@ -14,6 +14,21 @@
  * porque el servidor comprueba el origen en cada llamada.
  */
 
+/**
+ * Un tamaño de un servicio, con su propio precio y su propia duración.
+ *
+ * Manager los da ya resueltos junto al catálogo: esta web no calcula nada, solo
+ * enseña lo que el negocio configuró y manda el elegido tal cual al reservar.
+ */
+export interface TamanoDeServicio {
+  id: string;
+  label: string;
+  priceMinor: number;
+  currency: string;
+  durationMinutes: number;
+  displayOrder: number;
+}
+
 export interface ServicioPublico {
   id: string;
   name: string;
@@ -23,6 +38,8 @@ export interface ServicioPublico {
   currency: string | null;
   priceMode: 'fixed' | 'from' | 'on_request';
   displayOrder: number;
+  /** Vacío cuando el servicio no ofrece tamaños: se reserva con su precio y duración de siempre. */
+  sizeTiers: TamanoDeServicio[];
 }
 
 export interface CampoDeReserva {
@@ -174,15 +191,17 @@ export function estadoDelNegocio(): Promise<EstadoDelNegocio> {
  * enseñar una hora tachada dice más que hacerla desaparecer, y es lo que permite
  * que se note que el sitio está lleno a esa hora y no que no se trabaja.
  */
-export function panoramaDeHuecos(serviceId: string, desde: string, hasta: string): Promise<{
+export function panoramaDeHuecos(serviceId: string, desde: string, hasta: string, sizeId?: string): Promise<{
   timezone: string; days: DiaDePanorama[];
 }> {
-  const parametros = new URLSearchParams({ serviceId, from: desde, to: hasta });
+  const parametros = new URLSearchParams({ serviceId, from: desde, to: hasta, ...(sizeId ? { sizeId } : {}) });
   return pedir(`/public/v1/availability/overview?${parametros}`);
 }
 
 export interface DatosDeReserva {
   serviceId: string;
+  /** El tamaño elegido, cuando el servicio los ofrece. */
+  sizeId?: string;
   startsAt: string;
   customer: { firstName: string; lastName?: string; email?: string; phone?: string };
   details: { key: string; label: string; value: string }[];
@@ -226,4 +245,13 @@ export function precioLegible(servicio: ServicioPublico, locale = 'es-ES'): stri
     currency: moneda,
   }).format(servicio.priceMinor / 10 ** exponenteDeMoneda(moneda));
   return servicio.priceMode === 'from' ? `Desde ${importe}` : importe;
+}
+
+/** El precio de un tamaño, siempre fijo: a diferencia del servicio, un tamaño no tiene modo "a consultar" ni "desde". */
+export function precioLegibleTamano(tamano: TamanoDeServicio, locale = 'es-ES'): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: tamano.currency,
+    maximumFractionDigits: tamano.priceMinor % 100 === 0 ? 0 : 2,
+  }).format(tamano.priceMinor / 100);
 }

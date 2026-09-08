@@ -136,6 +136,44 @@
 
 .pco-reserva__servicio:hover svg { color: var(--wf-brand-primary); transform: translateX(2px); }
 
+/* ---------------------------------------------------------------- los tamaños */
+
+.pco-reserva__tamanos { display: grid; gap: 0.65rem; }
+
+.pco-reserva__tamano {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  text-align: left;
+  font: inherit;
+  color: var(--wf-text);
+  background: var(--wf-surface-muted);
+  border: 1px solid var(--wf-border);
+  border-radius: var(--wf-radius-input);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pco-reserva__tamano:hover {
+  border-color: var(--wf-brand-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px -12px color-mix(in srgb, var(--wf-brand-primary) 60%, transparent);
+}
+
+.pco-reserva__tamano-nombre { font-weight: 700; color: var(--wf-text); }
+.pco-reserva__tamano-meta { font-size: 0.85rem; color: var(--wf-text); font-weight: 700; white-space: nowrap; }
+
+.pco-reserva__tamano svg {
+  align-self: center;
+  color: var(--wf-text-muted);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.pco-reserva__tamano:hover svg { color: var(--wf-brand-primary); transform: translateX(2px); }
+
 /* ------------------------------------------------------------- el calendario */
 
 .pco-reserva__calendario { display: grid; gap: 0.85rem; }
