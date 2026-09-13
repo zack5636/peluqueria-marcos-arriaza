@@ -216,10 +216,13 @@ export interface DatosDeReserva {
  * aunque la pantalla lo diera por libre, así que dos personas no pueden quedarse
  * con el mismo.
  */
-export function crearReserva(datos: DatosDeReserva, idempotencia: string): Promise<RespuestaDeReserva> {
+export function crearReserva(datos: DatosDeReserva, idempotencia: string, token?: string | null): Promise<RespuestaDeReserva> {
   return pedir<RespuestaDeReserva>('/public/v1/bookings', {
     method: 'POST',
-    headers: { 'idempotency-key': idempotencia },
+    headers: {
+      'idempotency-key': idempotencia,
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify(datos),
   });
 }

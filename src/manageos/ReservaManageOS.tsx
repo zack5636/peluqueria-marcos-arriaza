@@ -3,6 +3,7 @@ import {
   ErrorDeManageOS, crearReserva, panoramaDeHuecos, precioLegible, precioLegibleTamano,
   type CampoDeReserva, type DiaDePanorama, type EstadoDelNegocio, type ServicioPublico, type TamanoDeServicio,
 } from './cliente';
+import { useCustomerAuth } from './useCustomerAuth';
 import { Icon } from '../site/components/Icon';
 
 /*
@@ -195,6 +196,26 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
     [estado.booking.fields],
   );
 
+  const { customer, token, refrescarCitas, abrirModalCitas } = useCustomerAuth();
+
+  useEffect(() => {
+    if (customer) {
+      setValores((prev) => {
+        const next = { ...prev };
+        for (const campo of campos) {
+          if (campo.target === 'customer.firstName' && !next[campo.key]) {
+            next[campo.key] = customer.name;
+          } else if (campo.target === 'customer.email' && !next[campo.key]) {
+            next[campo.key] = customer.email;
+          } else if (campo.target === 'customer.phone' && customer.phone && !next[campo.key]) {
+            next[campo.key] = customer.phone;
+          }
+        }
+        return next;
+      });
+    }
+  }, [customer, campos]);
+
   /*
    * Hasta cuándo se puede mirar. Lo decide el negocio desde Manager
    * (`booking.horizonDays`), no un límite fijado en la plantilla: una peluquería
@@ -331,9 +352,11 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
       const respuesta = await crearReserva(
         { serviceId: servicio.id, ...(sizeId ? { sizeId } : {}), startsAt: inicio, customer: cliente, details: detalles },
         crypto.randomUUID(),
+        token,
       );
       setReserva({ startsAt: respuesta.booking.startsAt, servicio: respuesta.booking.service.name });
       setPaso('hecho');
+      void refrescarCitas();
     } catch (error) {
       if (error instanceof ErrorDeManageOS && error.code === 'SLOT_UNAVAILABLE') {
         setAviso('Esa hora acaba de ocuparse. Elige otra, por favor.');
@@ -361,6 +384,17 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
         <p className="pco-reserva__nota">
           Te esperamos. Si no puedes venir, avísanos con tiempo y le damos tu hueco a otro peludo.
         </p>
+        {customer && (
+          <button
+            type="button"
+            className="manageos-btn-account"
+            onClick={abrirModalCitas}
+            style={{ margin: '0.75rem auto 0', display: 'inline-flex' }}
+          >
+            <Icon name="calendar" size={16} />
+            Ver en Mis citas
+          </button>
+        )}
       </div>
     );
   }

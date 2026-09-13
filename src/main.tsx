@@ -12,6 +12,9 @@ import {
   saveDemoRequest,
   subscribeTheme,
 } from './admin/store';
+import { CustomerAuthProvider } from './manageos/useCustomerAuth';
+import { AuthModal } from './manageos/AuthModal';
+import { MisCitas } from './manageos/MisCitas';
 
 /**
  * Punto de entrada de la web.
@@ -85,15 +88,19 @@ function App() {
   }
 
   return (
-    <SiteRenderer
-      config={siteConfig}
-      options={{
-        previewMode: false,
-        route: path,
-        onNavigate: navigate,
-        onSubmitBookingRequest: submitDemoBooking,
-      }}
-    />
+    <CustomerAuthProvider>
+      <SiteRenderer
+        config={siteConfig}
+        options={{
+          previewMode: false,
+          route: path,
+          onNavigate: navigate,
+          onSubmitBookingRequest: submitDemoBooking,
+        }}
+      />
+      <AuthModal />
+      <MisCitas />
+    </CustomerAuthProvider>
   );
 }
 

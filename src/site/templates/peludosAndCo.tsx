@@ -3,6 +3,7 @@ import { useSite, resolverPreseleccion } from '../context';
 import { useActiveSection, useStickyHeader } from '../hooks';
 import type { SectionComponent } from '../registry';
 import { ReservaConectada } from '../../manageos/ReservaConectada';
+import { useCustomerAuth } from '../../manageos/useCustomerAuth';
 import { useCatalogo } from '../../manageos/useCatalogo';
 import { useManageOS } from '../../manageos/useManageOS';
 import { formatearHorario } from '../../manageos/horario';
@@ -31,11 +32,20 @@ import { ServiceDetail } from './peludosFelices';
 
 const Header: SectionComponent = ({ section }) => {
   const { config, runCta } = useSite();
+  const { customer, abrirModalAuth, abrirModalCitas } = useCustomerAuth();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const active = useActiveSection(config.navigation.items);
   const stuck = useStickyHeader(60);
   const { business, navigation } = config;
+
+  const manejarAccionCuenta = () => {
+    if (customer) {
+      abrirModalCitas();
+    } else {
+      abrirModalAuth();
+    }
+  };
 
   return (
     <SectionShell as="header" anchor={section.anchor} className={`pco-header${stuck ? ' is-stuck' : ''}`}>
@@ -70,6 +80,15 @@ const Header: SectionComponent = ({ section }) => {
         </nav>
 
         <div className="pco-header__actions">
+          <button
+            type="button"
+            className="manageos-btn-account"
+            onClick={manejarAccionCuenta}
+            title={customer ? `Mis citas (${customer.name})` : 'Mis citas'}
+          >
+            <Icon name={customer ? 'user' : 'calendar'} size={18} />
+            <span>{customer ? customer.name.split(' ')[0] : 'Mis citas'}</span>
+          </button>
           <CtaButton cta={navigation.primaryCta} icon="calendar" size="sm" />
           <button
             type="button"
@@ -90,7 +109,23 @@ const Header: SectionComponent = ({ section }) => {
         items={navigation.items}
         activeId={active}
         triggerRef={triggerRef}
-        footer={<CtaButton cta={navigation.primaryCta} icon="calendar" full />}
+        footer={
+          <div style={{ display: 'grid', gap: '0.65rem' }}>
+            <button
+              type="button"
+              className="manageos-btn-account"
+              onClick={() => {
+                setOpen(false);
+                manejarAccionCuenta();
+              }}
+              style={{ justifyContent: 'center', padding: '0.75rem 1rem', width: '100%' }}
+            >
+              <Icon name={customer ? 'user' : 'calendar'} size={18} />
+              <span>{customer ? `Mis citas (${customer.name.split(' ')[0]})` : 'Mis citas'}</span>
+            </button>
+            <CtaButton cta={navigation.primaryCta} icon="calendar" full />
+          </div>
+        }
       />
     </SectionShell>
   );
