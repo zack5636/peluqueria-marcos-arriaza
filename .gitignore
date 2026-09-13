@@ -4,5 +4,15 @@ dist
 *.local
 *.tsbuildinfo
 
+# Secretos y variables de entorno
+.env
+.env.*
+!.env.example
 .vercel
-.env*
+
+# Dumps y credenciales
+*.dump
+*.sql
+*.log
+*.pem
+*.key
