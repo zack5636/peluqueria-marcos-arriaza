@@ -1,10 +1,10 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Modal } from '../site/components/Modal';
 import { useCustomerAuth } from './useCustomerAuth';
 import { ErrorDeManageOS } from './cliente';
 
 export function AuthModal() {
-  const { modalAuthAbierto, cerrarModalAuth, login, register } = useCustomerAuth();
+  const { modalAuthAbierto, cerrarModalAuth, login, register, datosInicialesAuth } = useCustomerAuth();
   const [tab, setTab] = useState<'login' | 'register'>('login');
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
@@ -12,6 +12,18 @@ export function AuthModal() {
   const [telefono, setTelefono] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+
+  useEffect(() => {
+    if (modalAuthAbierto) {
+      if (datosInicialesAuth) {
+        if (datosInicialesAuth.nombre) setNombre(datosInicialesAuth.nombre);
+        if (datosInicialesAuth.email) setEmail(datosInicialesAuth.email);
+        if (datosInicialesAuth.telefono) setTelefono(datosInicialesAuth.telefono);
+        setTab('register');
+      }
+      setError(null);
+    }
+  }, [modalAuthAbierto, datosInicialesAuth]);
 
   const resetForm = () => {
     setError(null);

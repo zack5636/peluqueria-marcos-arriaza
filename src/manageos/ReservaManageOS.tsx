@@ -196,7 +196,7 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
     [estado.booking.fields],
   );
 
-  const { customer, token, refrescarCitas, abrirModalCitas } = useCustomerAuth();
+  const { customer, token, refrescarCitas, abrirModalCitas, abrirModalAuth } = useCustomerAuth();
 
   useEffect(() => {
     if (customer) {
@@ -314,46 +314,21 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
     return campo.type === 'boolean' ? valor !== 'true' : valor.length === 0;
   });
 
-  const enviar = async () => {
-    if (enviandoRef.current || !servicio || !inicio) return;
-    if (faltantes.length) { setAviso(`Falta ${faltantes[0]!.label.toLowerCase()}.`); return; }
+  const [reservaPendiente, setReservaPendiente] = useState<{
+    datos: Parameters<typeof crearReserva>[0];
+    idempotencia: string;
+  } | null>(null);
+
+  const ejecutarReserva = async (
+    datos: Parameters<typeof crearReserva>[0],
+    idempotencia: string,
+    tokenAuth: string,
+  ) => {
     enviandoRef.current = true;
     setEnviando(true);
     setAviso(null);
     try {
-      const cliente: { firstName: string; lastName?: string; email?: string; phone?: string } = { firstName: '' };
-      const detalles: { key: string; label: string; value: string }[] = [];
-      for (const campo of campos) {
-        const valor = (valores[campo.key] ?? '').trim();
-        if (!valor) continue;
-        if (campo.target === 'customer.firstName') cliente.firstName = valor;
-        else if (campo.target === 'customer.lastName') cliente.lastName = valor;
-        else if (campo.target === 'customer.email') cliente.email = valor;
-        else if (campo.target === 'customer.phone') cliente.phone = valor;
-        else detalles.push({ key: campo.key, label: campo.label, value: valor });
-      }
-      /*
-       * El servidor solo acepta claves de detalle que el propio negocio haya
-       * declarado (`booking.fields`): no se puede colar una "paquete_elegido"
-       * que Manager no conoce. Se antepone al primer campo de texto libre en
-       * su lugar, que es donde un mensaje así ya tiene sitio.
-       */
-      if (notaPaquete) {
-        const libre = detalles.find((detalle) => campos.find(
-          (campo) => campo.key === detalle.key && campo.type === 'long_text',
-        ));
-        const prefijo = `[${notaPaquete}] `;
-        if (libre) libre.value = `${prefijo}${libre.value}`;
-        else {
-          const campoLibre = campos.find((campo) => campo.type === 'long_text');
-          if (campoLibre) detalles.push({ key: campoLibre.key, label: campoLibre.label, value: prefijo.trim() });
-        }
-      }
-      const respuesta = await crearReserva(
-        { serviceId: servicio.id, ...(sizeId ? { sizeId } : {}), startsAt: inicio, customer: cliente, details: detalles },
-        crypto.randomUUID(),
-        token,
-      );
+      const respuesta = await crearReserva(datos, idempotencia, tokenAuth);
       setReserva({ startsAt: respuesta.booking.startsAt, servicio: respuesta.booking.service.name });
       setPaso('hecho');
       void refrescarCitas();
@@ -362,7 +337,7 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
         setAviso('Esa hora acaba de ocuparse. Elige otra, por favor.');
         setInicio('');
         setPaso('hora');
-        void cargarAgenda(servicio.id, mes, sizeId || undefined);
+        if (servicio) void cargarAgenda(servicio.id, mes, sizeId || undefined);
       } else {
         setAviso(error instanceof ErrorDeManageOS ? error.message : 'No hemos podido completar la reserva.');
       }
@@ -370,6 +345,69 @@ export function ReservaManageOS({ estado, whatsapp, servicioInicial, paqueteInic
       enviandoRef.current = false;
       setEnviando(false);
     }
+  };
+
+  useEffect(() => {
+    if (token && reservaPendiente && !enviandoRef.current) {
+      const pendiente = reservaPendiente;
+      setReservaPendiente(null);
+      void ejecutarReserva(pendiente.datos, pendiente.idempotencia, token);
+    }
+  }, [token, reservaPendiente]);
+
+  const enviar = async () => {
+    if (enviandoRef.current || !servicio || !inicio) return;
+    if (faltantes.length) { setAviso(`Falta ${faltantes[0]!.label.toLowerCase()}.`); return; }
+
+    const cliente: { firstName: string; lastName?: string; email?: string; phone?: string } = { firstName: '' };
+    const detalles: { key: string; label: string; value: string }[] = [];
+    for (const campo of campos) {
+      const valor = (valores[campo.key] ?? '').trim();
+      if (!valor) continue;
+      if (campo.target === 'customer.firstName') cliente.firstName = valor;
+      else if (campo.target === 'customer.lastName') cliente.lastName = valor;
+      else if (campo.target === 'customer.email') cliente.email = valor;
+      else if (campo.target === 'customer.phone') cliente.phone = valor;
+      else detalles.push({ key: campo.key, label: campo.label, value: valor });
+    }
+    /*
+     * El servidor solo acepta claves de detalle que el propio negocio haya
+     * declarado (`booking.fields`): no se puede colar una "paquete_elegido"
+     * que Manager no conoce. Se antepone al primer campo de texto libre en
+     * su lugar, que es donde un mensaje así ya tiene sitio.
+     */
+    if (notaPaquete) {
+      const libre = detalles.find((detalle) => campos.find(
+        (campo) => campo.key === detalle.key && campo.type === 'long_text',
+      ));
+      const prefijo = `[${notaPaquete}] `;
+      if (libre) libre.value = `${prefijo}${libre.value}`;
+      else {
+        const campoLibre = campos.find((campo) => campo.type === 'long_text');
+        if (campoLibre) detalles.push({ key: campoLibre.key, label: campoLibre.label, value: prefijo.trim() });
+      }
+    }
+
+    const datosReserva = {
+      serviceId: servicio.id,
+      ...(sizeId ? { sizeId } : {}),
+      startsAt: inicio,
+      customer: cliente,
+      details: detalles,
+    };
+    const idempotencia = crypto.randomUUID();
+
+    if (!token) {
+      setReservaPendiente({ datos: datosReserva, idempotencia });
+      abrirModalAuth({
+        nombre: [cliente.firstName, cliente.lastName].filter(Boolean).join(' '),
+        email: cliente.email,
+        telefono: cliente.phone,
+      });
+      return;
+    }
+
+    await ejecutarReserva(datosReserva, idempotencia, token);
   };
 
   if (paso === 'hecho' && reserva) {

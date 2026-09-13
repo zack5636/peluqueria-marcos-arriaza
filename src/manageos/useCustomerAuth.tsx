@@ -22,7 +22,8 @@ export interface CustomerAuthContextValue {
   logout: () => Promise<void>;
   refrescarCitas: () => Promise<void>;
   modalAuthAbierto: boolean;
-  abrirModalAuth: () => void;
+  datosInicialesAuth: { nombre?: string; email?: string; telefono?: string } | null;
+  abrirModalAuth: (datos?: { nombre?: string; email?: string; telefono?: string }) => void;
   cerrarModalAuth: () => void;
   modalCitasAbierto: boolean;
   abrirModalCitas: () => void;
@@ -38,6 +39,7 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
   const [citas, setCitas] = useState<CitaCliente[]>([]);
   const [cargandoCitas, setCargandoCitas] = useState<boolean>(false);
   const [modalAuthAbierto, setModalAuthAbierto] = useState<boolean>(false);
+  const [datosInicialesAuth, setDatosInicialesAuth] = useState<{ nombre?: string; email?: string; telefono?: string } | null>(null);
   const [modalCitasAbierto, setModalCitasAbierto] = useState<boolean>(false);
 
   const refrescarCitas = useCallback(async () => {
@@ -116,8 +118,14 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
     setModalCitasAbierto(false);
   }, [token]);
 
-  const abrirModalAuth = useCallback(() => setModalAuthAbierto(true), []);
-  const cerrarModalAuth = useCallback(() => setModalAuthAbierto(false), []);
+  const abrirModalAuth = useCallback((datos?: { nombre?: string; email?: string; telefono?: string }) => {
+    if (datos) setDatosInicialesAuth(datos);
+    setModalAuthAbierto(true);
+  }, []);
+  const cerrarModalAuth = useCallback(() => {
+    setDatosInicialesAuth(null);
+    setModalAuthAbierto(false);
+  }, []);
   const abrirModalCitas = useCallback(() => setModalCitasAbierto(true), []);
   const cerrarModalCitas = useCallback(() => setModalCitasAbierto(false), []);
 
@@ -132,6 +140,7 @@ export function CustomerAuthProvider({ children }: { children: ReactNode }) {
     logout,
     refrescarCitas,
     modalAuthAbierto,
+    datosInicialesAuth,
     abrirModalAuth,
     cerrarModalAuth,
     modalCitasAbierto,
